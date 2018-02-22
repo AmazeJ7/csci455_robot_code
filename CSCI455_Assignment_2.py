@@ -173,10 +173,12 @@ def doshit(action):
     print(action)
 
 m = mouseMovement()
+
 myCan = Canvas(root, bg="#000000", width="1000", height="50")
 myCan.grid(column=1, row=0)
 myCan.bind('<ButtonPress-1>', m.mousePressed)
 myCan.bind('<ButtonRelease-1>', m.mouseRelease)
+
 ht = Button(root, width="15", text="Head Tilt", bg="blue", fg="yellow", command=ht)
 ht.grid(column=0, row=0)
 hr = Button(root, width="15", text="Head Rotate", bg="blue", fg="yellow", command=hr)
