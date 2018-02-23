@@ -126,68 +126,104 @@ root = Tk()
 
 xpos = 0
 ypos = 0
+actionCount = 0
+actions = ['','','','','','','','']
+pictureSize = 100
+
+htPhoto = PhotoImage(file="HeadTilt.png")
+htPhoto = htPhoto.subsample(2,2)
+hrPhoto = PhotoImage(file="HeadRotate.png")
+hrPhoto = hrPhoto.subsample(2,2)
+runPhoto = PhotoImage(file="Move.png")
+runPhoto = runPhoto.subsample(2,2)
+turnPhoto = PhotoImage(file="Rotate.png")
+turnPhoto = turnPhoto.subsample(2,2)
+brPhoto = PhotoImage(file="BodyRotate.png")
+brPhoto = brPhoto.subsample(2,2)
 
 def ht():
-    global xpos, ypos
-    myCan.create_rectangle(xpos,ypos,xpos+50,ypos+50,fill="red")
-    xpos += 55
+    global xpos, ypos, actionCount, actions
+    myCan.create_image(50+xpos, 50, image=htPhoto)
+    xpos += 105
+    actions[actionCount] = 'ht'
+    actionCount += 1
+    htSettings = iconSettings('ht')
 
 def hr():
-    global xpos, ypos
-    myCan.create_rectangle(xpos,ypos,xpos+50,ypos+50,fill="green")
-    xpos += 55
+    global xpos, ypos, actionCount, actions
+    myCan.create_image(50+xpos, 50, image=hrPhoto)
+    xpos += 105
+    actions[actionCount] = 'hr'
+    actionCount += 1
 
 def run():
-    global xpos, ypos
-    myCan.create_rectangle(xpos,ypos,xpos+50,ypos+50,fill="yellow")
-    xpos += 55
+    global xpos, ypos, actionCount, actions
+    myCan.create_image(50+xpos, 50, image=runPhoto)
+    xpos += 105
+    actions[actionCount] = 'run'
+    actionCount += 1
 
 def turn():
-    global xpos, ypos
-    myCan.create_rectangle(xpos,ypos,xpos+50,ypos+50,fill="cyan")
-    xpos += 55
+    global xpos, ypos, actionCount, actions
+    myCan.create_image(50+xpos, 50, image=turnPhoto)
+    xpos += 105
+    actions[actionCount] = 'turn'
+    actionCount += 1
 
 def br():
-    global xpos, ypos
-    myCan.create_rectangle(xpos,ypos,xpos+50,ypos+50,fill="magenta")
-    xpos += 55
+    global xpos, ypos, actionCount, actions
+    myCan.create_image(50+xpos, 50, image=brPhoto)
+    xpos += 105
+    actions[actionCount] = 'br'
+    actionCount += 1
+
+class iconSettings():
+    def __init__(self, type):
+        self.type = type
+        #if type == 'ht':
+            #myCan.create_rectangle(0, 60, 50, 110,fill='red')
+
 
 class mouseMovement():
     def __init__(self):
         self.flag = False
-        self.x = 5
-        self.action = 0
 
     def mousePressed(self, event):
-        if 50 > event.x > 0 and 0 < event.y < 50:
-            self.flag = True
-            self.action = 1
+        global actionCount, actions
+        for x in range(0, 8):
+            if (2*x*50+50) > event.x > (2*x*50) and 0 < event.y < 50 and actionCount > x:
+                self.flag = True
+                print(actions[x])
 
     def mouseRelease(self, event):
         if self.flag == True:
             self.flag = False
-            global doshit
-            doshit(self.action)
-
-def doshit(action):
-    print(action)
 
 m = mouseMovement()
 
-myCan = Canvas(root, bg="#000000", width="1000", height="50")
-myCan.grid(column=1, row=0)
+myCan = Canvas(root, bg="#FFFFFF", width="800", height="100")
+myCan.pack(side=RIGHT)
 myCan.bind('<ButtonPress-1>', m.mousePressed)
 myCan.bind('<ButtonRelease-1>', m.mouseRelease)
 
-ht = Button(root, width="15", text="Head Tilt", bg="blue", fg="yellow", command=ht)
-ht.grid(column=0, row=0)
-hr = Button(root, width="15", text="Head Rotate", bg="blue", fg="yellow", command=hr)
-hr.grid(column=0, row=1)
-run = Button(root, width="15", text="Move", bg="blue", fg="yellow", command=run)
-run.grid(column=0, row=2)
-turn = Button(root, width="15", text="Turn", bg="blue", fg="yellow", command=turn)
-turn.grid(column=0, row=3)
-br = Button(root, width="15", text="Body Rotate", bg="blue", fg="yellow", command=br)
-br.grid(column=0, row=4)
+ht = Button(root, command=ht)
+ht.config(image=htPhoto, width = pictureSize, height = pictureSize)
+ht.pack(side=TOP)
+
+hr = Button(root, command=hr)
+hr.config(image=hrPhoto, width = pictureSize, height = pictureSize)
+hr.pack(side=TOP)
+
+run = Button(root, command=run)
+run.config(image=runPhoto, width = pictureSize, height = pictureSize)
+run.pack(side=TOP)
+
+turn = Button(root, command=turn)
+turn.config(image=turnPhoto, width = pictureSize, height = pictureSize)
+turn.pack(side=TOP)
+
+br = Button(root, command=br)
+br.config(image=brPhoto, width = pictureSize, height = pictureSize)
+br.pack(side=TOP)
 
 root.mainloop()
