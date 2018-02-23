@@ -141,6 +141,9 @@ turnPhoto = turnPhoto.subsample(2,2)
 brPhoto = PhotoImage(file="BodyRotate.png")
 brPhoto = brPhoto.subsample(2,2)
 
+def go():
+    print('go!')
+
 def ht():
     global xpos, ypos, actionCount, actions
     myCan.create_image(50+xpos, 50, image=htPhoto)
@@ -191,7 +194,7 @@ class mouseMovement():
     def mousePressed(self, event):
         global actionCount, actions
         for x in range(0, 8):
-            if (2*x*50+50) > event.x > (2*x*50) and 0 < event.y < 50 and actionCount > x:
+            if (x*105+100) > event.x > ((x*100)+(5*x)) and 0 < event.y < 100 and actionCount > x:
                 self.flag = True
                 print(actions[x])
 
@@ -201,7 +204,7 @@ class mouseMovement():
 
 m = mouseMovement()
 
-myCan = Canvas(root, bg="#FFFFFF", width="800", height="100")
+myCan = Canvas(root, bg="#a9a9a9", width="830", height="100")
 myCan.pack(side=RIGHT)
 myCan.bind('<ButtonPress-1>', m.mousePressed)
 myCan.bind('<ButtonRelease-1>', m.mouseRelease)
@@ -225,5 +228,8 @@ turn.pack(side=TOP)
 br = Button(root, command=br)
 br.config(image=brPhoto, width = pictureSize, height = pictureSize)
 br.pack(side=TOP)
+
+go = Button(root, width = 13, text = 'GO!', bg = 'black', fg = 'white', command=go)
+go.pack(side=TOP)
 
 root.mainloop()
