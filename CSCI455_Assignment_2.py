@@ -62,7 +62,7 @@ def go():
             # elif actions[x].pos == 3:
             #     x.setTarget(3, 7000)
             # elif actions[x].pos == 4:
-            #     x.setTarget(3, 7800)
+            #     x.setTarget(3, 8000)
             # elif actions[x].pos == 0:
             #     x.setTarget(3, 6000)
             time.sleep(actions[x].time)
@@ -204,7 +204,7 @@ class MouseMovement:
 
     def mouse_pressed(self, event):
         global action_count, actions
-        for x in range(0, 8):
+        for x in range(len(actions)):
             if (x * 105 + 100) > event.x > (x * 105) and 250 < event.y < 350 and action_count > x:
                 self.flag = True
                 actions[x].open_settings()
@@ -216,7 +216,7 @@ class MouseMovement:
 
 m = MouseMovement()
 
-canvas = Canvas(root, bg="black", width="830", height="660")
+canvas = Canvas(root, bg= "#1F1F1F", width="830", height="660")
 canvas.pack(side=RIGHT)
 canvas.bind('<ButtonPress-1>', m.mouse_pressed)
 canvas.bind('<ButtonRelease-1>', m.mouse_release)
