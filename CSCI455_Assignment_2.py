@@ -1,6 +1,7 @@
 import Maestro
 from tkinter import *
 import os
+import time
 
 # x = Maestro.Controller()
 #
@@ -10,234 +11,243 @@ import os
 # x.setAccel(0, 10)
 # x.setAccel(1, 10)
 # x.setAccel(2, 30)
-# x.setRange(3, 3200, 7800)
 # x.setAccel(3, 20)
 # x.setAccel(3, 20)
 #
-# os.system('xset r off')
-#
-# global forwardSpeed
-# global backSpeed
-# global headPos
-# global headTilt
-# forwardSpeed = 5250
-# backSpeed = 6750
-# headPos = 6000
-# headTilt = 6000
-#
-# def forward(event):
-#     x.setTarget(1, forwardSpeed)
-#
-# def back(event):
-#     x.setTarget(1, backSpeed)
-#
-# def forwardBackOff(event):
-#     x.setTarget(1, 6000)
-#
-# def left(event):
-#     x.setTarget(2, 7000)
-#
-# def right(event):
-#     x.setTarget(2, 5000)
-#
-# def leftRightOff(event):
-#     x.setTarget(2, 6000)
-#
-# def stop(event):
-#     for i in range(len(x.Targets)):
-#         x.setTarget(i, 6000)
-#
-# def setSpeed(event):
-#     global forwardSpeed
-#     global backSpeed
-#     if (event.char == 'i'):
-#         forwardSpeed = 5250
-#         backSpeed = 6750
-#         print("speed set to low")
-#     if (event.char == 'o'):
-#         forwardSpeed = 5000
-#         backSpeed = 7000
-#         print("speed set to med")
-#     if (event.char == 'p'):
-#         forwardSpeed = 4750
-#         backSpeed = 7250
-#         print("speed set to high")
-#
-# def setWaist(event):
-#     if (event.char == 'a'):
-#         x.setTarget(0, 4250)
-#     if (event.char == 's'):
-#         x.setTarget(0, 6000)
-#     if (event.char == 'd'):
-#         x.setTarget(0, 7750)
-#
-# def setHead(event):
-#     global headPos
-#     if (event.char == 'q'):
-#         headPos = headPos - 1000
-#     if (event.char == 'w'):
-#         headPos = 6000
-#     if (event.char == 'e'):
-#         headPos = headPos + 1000
-#     x.setTarget(3, headPos)
-#
-# def setHeadTilt(event):
-#     global headTilt
-#     if (event.char == 'z'):
-#         headTilt = headTilt - 1000
-#     if (event.char == 'x'):
-#         headTilt = 6000
-#     if (event.char == 'c'):
-#         headTilt = headTilt + 1000
-#     x.setTarget(4, headTilt)
-#
-# root.bind('<Up>', forward)
-# root.bind('<KeyRelease-Up>', forwardBackOff)
-#
-# root.bind('<space>', stop)
-#
-# root.bind('<Down>', back)
-# root.bind('<KeyRelease-Down>', forwardBackOff)
-#
-# root.bind('<Left>', left)
-# root.bind('<KeyRelease-Left>', leftRightOff)
-#
-# root.bind('<Right>', right)
-# root.bind('<KeyRelease-Right>', leftRightOff)
-#
-# root.bind('<i>', setSpeed)
-# root.bind('<o>', setSpeed)
-# root.bind('<p>', setSpeed)
-#
-# root.bind('<a>', setWaist)
-# root.bind('<s>', setWaist)
-# root.bind('<d>', setWaist)
-#
-# root.bind('<q>', setHead)
-# root.bind('<w>', setHead)
-# root.bind('<e>', setHead)
-#
-# root.bind('<z>', setHeadTilt)
-# root.bind('<x>', setHeadTilt)
-# root.bind('<c>', setHeadTilt)
-#
-# os.system('xset r on')
+os.system('xset r off')
 
 xpos = 0
-ypos = 0
-actionCount = 0
-actions = ['','','','','','','','']
-pictureSize = 100
+ypos = 300
+action_count = 0
+actions = []
+pic_size = 100
 
 root = Tk()
 
-htPhoto = PhotoImage(file="icons\HeadTilt.png")
-htPhoto = htPhoto.subsample(2,2)
-hrPhoto = PhotoImage(file="icons\HeadRotate.png")
-hrPhoto = hrPhoto.subsample(2,2)
-runPhoto = PhotoImage(file="icons\Move.png")
-runPhoto = runPhoto.subsample(2,2)
-turnPhoto = PhotoImage(file="icons\Rotate.png")
-turnPhoto = turnPhoto.subsample(2,2)
-brPhoto = PhotoImage(file="icons\BodyRotate.png")
-brPhoto = brPhoto.subsample(2,2)
+ht_icon = PhotoImage(file="icons\HeadTilt.png")
+ht_icon = ht_icon.subsample(2, 2)
+hr_icon = PhotoImage(file="icons\HeadRotate.png")
+hr_icon = hr_icon.subsample(2, 2)
+run_icon = PhotoImage(file="icons\Move.png")
+run_icon = run_icon.subsample(2, 2)
+turn_icon = PhotoImage(file="icons\Rotate.png")
+turn_icon = turn_icon.subsample(2, 2)
+br_icon = PhotoImage(file="icons\BodyRotate.png")
+br_icon = br_icon.subsample(2, 2)
+wait_icon = PhotoImage(file="icons\Wait.png")
+wait_icon = wait_icon.subsample(2, 2)
+
 
 def go():
     print('go!')
+    for x in range(len(actions)):
+        if actions[x].name == 'ht':
+            # if actions[x].pos == 1:
+            #     x.setTarget(4, 4000)
+            # elif actions[x].pos == 2:
+            #     x.setTarget(4, 5000)
+            # elif actions[x].pos == 3:
+            #     x.setTarget(4, 7000)
+            # elif actions[x].pos == 4:
+            #     x.setTarget(4, 8000)
+            # elif actions[x].pos == 0:
+            #     x.setTarget(4, 6000)
+            time.sleep(actions[x].time)
+            # x.setTarget(4, 6000)
+        elif actions[x].name == 'hr':
+            # if actions[x].pos == 1:
+            #     x.setTarget(3, 4000)
+            # elif actions[x].pos == 2:
+            #     x.setTarget(3, 5000)
+            # elif actions[x].pos == 3:
+            #     x.setTarget(3, 7000)
+            # elif actions[x].pos == 4:
+            #     x.setTarget(3, 7800)
+            # elif actions[x].pos == 0:
+            #     x.setTarget(3, 6000)
+            time.sleep(actions[x].time)
+            # x.setTarget(3, 6000)
+        elif actions[x].name == 'run':
+            # if actions[x].pos == 1:
+            #     x.setTarget(1, 5000)
+            # elif actions[x].pos == 2:
+            #     x.setTarget(1, 7000)
+            # elif actions[x].pos == 0:
+            #     x.setTarget(1, 6000)
+            time.sleep(actions[x].time)
+            # x.setTarget(1, 6000)
+        elif actions[x].name == 'turn':
+            # if actions[x].pos == 1:
+            #     x.setTarget(2, 7000)
+            # elif actions[x].pos == 2:
+            #     x.setTarget(2, 5000)
+            # elif actions[x].pos == 0:
+            #     x.setTarget(2, 6000)
+            time.sleep(actions[x].time)
+            # x.setTarget(2, 6000)
+        elif actions[x].name == 'br':
+            # if actions[x].pos == 1:
+            #     x.setTarget(0, 4250)
+            # elif actions[x].pos == 2:
+            #     x.setTarget(0, 7750)
+            # elif actions[x].pos == 0:
+            #     x.setTarget(0, 6000)
+            time.sleep(actions[x].time)
+            # x.setTarget(0, 6000)
+        elif actions[x].name == 'wait':
+            time.sleep(actions[x].time)
+
 
 def ht():
-    global xpos, ypos, actionCount, actions
-    myCan.create_image(50+xpos, 50, image=htPhoto)
+    global xpos, ypos, action_count, actions
+    canvas.create_image(50 + xpos, ypos, image=ht_icon)
     xpos += 105
-    actions[actionCount] = icon('ht')
-    actionCount += 1
+    actions.append(Icon('ht', action_count))
+    action_count += 1
+
 
 def hr():
-    global xpos, ypos, actionCount, actions
-    myCan.create_image(50+xpos, 50, image=hrPhoto)
+    global xpos, ypos, action_count, actions
+    canvas.create_image(50 + xpos, ypos, image=hr_icon)
     xpos += 105
-    actions[actionCount] = icon('hr')
-    actionCount += 1
+    actions.append(Icon('hr', action_count))
+    action_count += 1
+
 
 def run():
-    global xpos, ypos, actionCount, actions
-    myCan.create_image(50+xpos, 50, image=runPhoto)
+    global xpos, ypos, action_count, actions
+    canvas.create_image(50 + xpos, ypos, image=run_icon)
     xpos += 105
-    actions[actionCount] = icon('run')
-    actionCount += 1
+    actions.append(Icon('run', action_count))
+    action_count += 1
+
 
 def turn():
-    global xpos, ypos, actionCount, actions
-    myCan.create_image(50+xpos, 50, image=turnPhoto)
+    global xpos, ypos, action_count, actions
+    canvas.create_image(50 + xpos, ypos, image=turn_icon)
     xpos += 105
-    actions[actionCount] = icon('turn')
-    actionCount += 1
+    actions.append(Icon('turn', action_count))
+    action_count += 1
+
 
 def br():
-    global xpos, actionCount, actions
-    myCan.create_image(50+xpos, 50, image=brPhoto)
+    global xpos, action_count, actions
+    canvas.create_image(50 + xpos, ypos, image=br_icon)
     xpos += 105
-    actions[actionCount] = icon('br')
-    actionCount += 1
+    actions.append(Icon('br', action_count))
+    action_count += 1
 
-class icon:
-    def __init__(self, name):
+
+def wait():
+    global xpos, action_count, actions
+    canvas.create_image(50 + xpos, ypos, image=wait_icon)
+    xpos += 105
+    actions.append(Icon('wait', action_count))
+    action_count += 1
+
+
+class Icon:
+    def __init__(self, name, place):
         self.name = name
+        self.place = place
         self.time = 2
+        self.pos = 0
 
-    def openSettings(self):
-        settingsTK = Tk()
-        w = Scale(settingsTK, from_=0, to=10)
-        w.pack()
-        w2 = Scale(settingsTK, from_=0, to=5)
-        w2.pack()
-        print(w.get())
-        settingsTK.mainloop()
+    def open_settings(self):
+        def save_val():
+            self.time = time_scale.get()
+            self.pos = position.get()
 
-class mouseMovement:
+        settingstk = Tk()
+        label1 = Label(settingstk, text="Time (S)")
+        label1.pack()
+        time_scale = Scale(settingstk, from_=1, to=10, orient=HORIZONTAL)
+        time_scale.pack()
+        if self.name == 'ht':
+            label1 = Label(settingstk, text="Position (Left to Right)")
+            label1.pack()
+            position = Scale(settingstk, from_=1, to=4, orient=HORIZONTAL)
+            position.pack()
+        elif self.name == 'hr':
+            label1 = Label(settingstk, text="Position (Left to Right)")
+            label1.pack()
+            position = Scale(settingstk, from_=1, to=4, orient=HORIZONTAL)
+            position.pack()
+        elif self.name == 'turn':
+            label1 = Label(settingstk, text="Direction (Left or Right)")
+            label1.pack()
+            position = Scale(settingstk, from_=1, to=4, orient=HORIZONTAL)
+            position.pack()
+        elif self.name == 'run':
+            label1 = Label(settingstk, text="Direction (Foreword or Backward)")
+            label1.pack()
+            position = Scale(settingstk, from_=1, to=4, orient=HORIZONTAL)
+            position.pack()
+        elif self.name == 'br':
+            label1 = Label(settingstk, text="Position (Left to Right)")
+            label1.pack()
+            position = Scale(settingstk, from_=1, to=4, orient=HORIZONTAL)
+            position.pack()
+        save_values = Button(settingstk, text="Save Values", command=save_val)
+        save_values.pack()
+        delete = Button(settingstk, text="Delete", command=self.__delete__)
+        delete.pack()
+        settingstk.mainloop()
+
+    def __delete__(self):
+        self.time = 0
+
+
+class MouseMovement:
     def __init__(self):
         self.flag = False
 
-    def mousePressed(self, event):
-        global actionCount, actions
+    def mouse_pressed(self, event):
+        global action_count, actions
         for x in range(0, 8):
-            if (x*105+100) > event.x > (x*105) and 0 < event.y < 100 and actionCount > x:
+            if (x * 105 + 100) > event.x > (x * 105) and 250 < event.y < 350 and action_count > x:
                 self.flag = True
-                print(actions[x])
-                actions[x].openSettings()
+                actions[x].open_settings()
 
-    def mouseRelease(self, event):
-        if self.flag == True:
+    def mouse_release(self, event):
+        if self.flag:
             self.flag = False
 
-m = mouseMovement()
 
-myCan = Canvas(root, bg="#a9a9a9", width="830", height="100")
-myCan.pack(side=RIGHT)
-myCan.bind('<ButtonPress-1>', m.mousePressed)
-myCan.bind('<ButtonRelease-1>', m.mouseRelease)
+m = MouseMovement()
+
+canvas = Canvas(root, bg="black", width="830", height="660")
+canvas.pack(side=RIGHT)
+canvas.bind('<ButtonPress-1>', m.mouse_pressed)
+canvas.bind('<ButtonRelease-1>', m.mouse_release)
 
 ht = Button(root, command=ht)
-ht.config(image=htPhoto, width = pictureSize, height = pictureSize)
+ht.config(image=ht_icon, width=pic_size, height=pic_size)
 ht.pack(side=TOP)
 
 hr = Button(root, command=hr)
-hr.config(image=hrPhoto, width = pictureSize, height = pictureSize)
+hr.config(image=hr_icon, width=pic_size, height=pic_size)
 hr.pack(side=TOP)
 
 run = Button(root, command=run)
-run.config(image=runPhoto, width = pictureSize, height = pictureSize)
+run.config(image=run_icon, width=pic_size, height=pic_size)
 run.pack(side=TOP)
 
 turn = Button(root, command=turn)
-turn.config(image=turnPhoto, width = pictureSize, height = pictureSize)
+turn.config(image=turn_icon, width=pic_size, height=pic_size)
 turn.pack(side=TOP)
 
 br = Button(root, command=br)
-br.config(image=brPhoto, width = pictureSize, height = pictureSize)
+br.config(image=br_icon, width=pic_size, height=pic_size)
 br.pack(side=TOP)
 
-go = Button(root, width = 13, text = 'GO!', bg = 'black', fg = 'white', command=go)
+wait = Button(root, command=wait)
+wait.config(image=wait_icon, width=pic_size, height=pic_size)
+wait.pack(side=TOP)
+
+go = Button(root, width=13, text='GO!', bg='black', fg='white', command=go)
 go.pack(side=TOP)
 
 root.mainloop()
+
+os.system('xset r on')
