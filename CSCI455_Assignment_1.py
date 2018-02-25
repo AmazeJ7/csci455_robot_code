@@ -57,22 +57,18 @@ def stop(event):
 
 
 def setSpeed(event):
+    global forwardSpeed
+    global backSpeed
     if (event.char == 'i'):
-        global forwardSpeed
         forwardSpeed = 5250
-        global backSpeed
         backSpeed = 6750
         print("speed set to low")
     if (event.char == 'o'):
-        global forwardSpeed
         forwardSpeed = 5000
-        global backSpeed
         backSpeed = 7000
         print("speed set to med")
     if (event.char == 'p'):
-        global forwardSpeed
         forwardSpeed = 4750
-        global backSpeed
         backSpeed = 7250
         print("speed set to high")
 
@@ -87,27 +83,23 @@ def setWaist(event):
 
 
 def setHead(event):
+    global headPos
     if (event.char == 'q'):
-        global headPos
         headPos = headPos - 1000
     if (event.char == 'w'):
-        global headPos
         headPos = 6000
     if (event.char == 'e'):
-        global headPos
         headPos = headPos + 1000
     x.setTarget(3, headPos)
 
 
 def setHeadTilt(event):
+    global headTilt
     if (event.char == 'z'):
-        global headTilt
         headTilt = headTilt - 1000
     if (event.char == 'x'):
-        global headTilt
         headTilt = 6000
     if (event.char == 'c'):
-        global headTilt
         headTilt = headTilt + 1000
     x.setTarget(4, headTilt)
 

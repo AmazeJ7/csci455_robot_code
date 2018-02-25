@@ -1,11 +1,11 @@
-#import Maestro
+import Maestro
 from tkinter import *
 import os
 
 # x = Maestro.Controller()
 #
 # for chan in range(len(x.Targets)):
-#     x.setTarget(chan, 6000)
+#      x.setTarget(chan, 6000)
 #
 # x.setAccel(0, 10)
 # x.setAccel(1, 10)
@@ -16,7 +16,6 @@ import os
 #
 # os.system('xset r off')
 #
-root = Tk()
 # global forwardSpeed
 # global backSpeed
 # global headPos
@@ -130,15 +129,17 @@ actionCount = 0
 actions = ['','','','','','','','']
 pictureSize = 100
 
-htPhoto = PhotoImage(file="HeadTilt.png")
+root = Tk()
+
+htPhoto = PhotoImage(file="icons\HeadTilt.png")
 htPhoto = htPhoto.subsample(2,2)
-hrPhoto = PhotoImage(file="HeadRotate.png")
+hrPhoto = PhotoImage(file="icons\HeadRotate.png")
 hrPhoto = hrPhoto.subsample(2,2)
-runPhoto = PhotoImage(file="Move.png")
+runPhoto = PhotoImage(file="icons\Move.png")
 runPhoto = runPhoto.subsample(2,2)
-turnPhoto = PhotoImage(file="Rotate.png")
+turnPhoto = PhotoImage(file="icons\Rotate.png")
 turnPhoto = turnPhoto.subsample(2,2)
-brPhoto = PhotoImage(file="BodyRotate.png")
+brPhoto = PhotoImage(file="icons\BodyRotate.png")
 brPhoto = brPhoto.subsample(2,2)
 
 def go():
@@ -148,55 +149,62 @@ def ht():
     global xpos, ypos, actionCount, actions
     myCan.create_image(50+xpos, 50, image=htPhoto)
     xpos += 105
-    actions[actionCount] = 'ht'
+    actions[actionCount] = icon('ht')
     actionCount += 1
-    htSettings = iconSettings('ht')
 
 def hr():
     global xpos, ypos, actionCount, actions
     myCan.create_image(50+xpos, 50, image=hrPhoto)
     xpos += 105
-    actions[actionCount] = 'hr'
+    actions[actionCount] = icon('hr')
     actionCount += 1
 
 def run():
     global xpos, ypos, actionCount, actions
     myCan.create_image(50+xpos, 50, image=runPhoto)
     xpos += 105
-    actions[actionCount] = 'run'
+    actions[actionCount] = icon('run')
     actionCount += 1
 
 def turn():
     global xpos, ypos, actionCount, actions
     myCan.create_image(50+xpos, 50, image=turnPhoto)
     xpos += 105
-    actions[actionCount] = 'turn'
+    actions[actionCount] = icon('turn')
     actionCount += 1
 
 def br():
-    global xpos, ypos, actionCount, actions
+    global xpos, actionCount, actions
     myCan.create_image(50+xpos, 50, image=brPhoto)
     xpos += 105
-    actions[actionCount] = 'br'
+    actions[actionCount] = icon('br')
     actionCount += 1
 
-class iconSettings():
-    def __init__(self, type):
-        self.type = type
-        #if type == 'ht':
-            #myCan.create_rectangle(0, 60, 50, 110,fill='red')
+class icon:
+    def __init__(self, name):
+        self.name = name
+        self.time = 2
 
+    def openSettings(self):
+        settingsTK = Tk()
+        w = Scale(settingsTK, from_=0, to=10)
+        w.pack()
+        w2 = Scale(settingsTK, from_=0, to=5)
+        w2.pack()
+        print(w.get())
+        settingsTK.mainloop()
 
-class mouseMovement():
+class mouseMovement:
     def __init__(self):
         self.flag = False
 
     def mousePressed(self, event):
         global actionCount, actions
         for x in range(0, 8):
-            if (x*105+100) > event.x > ((x*100)+(5*x)) and 0 < event.y < 100 and actionCount > x:
+            if (x*105+100) > event.x > (x*105) and 0 < event.y < 100 and actionCount > x:
                 self.flag = True
                 print(actions[x])
+                actions[x].openSettings()
 
     def mouseRelease(self, event):
         if self.flag == True:
