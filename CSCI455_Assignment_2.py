@@ -18,7 +18,6 @@ os.system('xset r off')
 
 xpos = 0
 ypos = 300
-action_count = 0
 actions = []
 pic_size = 100
 
@@ -36,6 +35,21 @@ br_icon = PhotoImage(file="icons\BodyRotate.png")
 br_icon = br_icon.subsample(2, 2)
 wait_icon = PhotoImage(file="icons\Wait.png")
 wait_icon = wait_icon.subsample(2, 2)
+
+
+def get_icon(name):
+    if name == "ht_icon":
+        return ht_icon
+    elif name == "hr_icon":
+        return hr_icon
+    elif name == "run_icon":
+        return run_icon
+    elif name == "turn_icon":
+        return turn_icon
+    elif name == "br_icon":
+        return br_icon
+    elif name == "wait_icon":
+        return wait_icon
 
 
 def go():
@@ -99,103 +113,90 @@ def go():
 
 
 def ht():
-    global xpos, ypos, action_count, actions
-    canvas.create_image(50 + xpos, ypos, image=ht_icon)
-    xpos += 105
-    actions.append(Icon('ht', action_count))
-    action_count += 1
+    actions.append(Icon('ht'))
 
 
 def hr():
-    global xpos, ypos, action_count, actions
-    canvas.create_image(50 + xpos, ypos, image=hr_icon)
-    xpos += 105
-    actions.append(Icon('hr', action_count))
-    action_count += 1
+    actions.append(Icon('hr'))
 
 
 def run():
-    global xpos, ypos, action_count, actions
-    canvas.create_image(50 + xpos, ypos, image=run_icon)
-    xpos += 105
-    actions.append(Icon('run', action_count))
-    action_count += 1
+    actions.append(Icon('run'))
 
 
 def turn():
-    global xpos, ypos, action_count, actions
-    canvas.create_image(50 + xpos, ypos, image=turn_icon)
-    xpos += 105
-    actions.append(Icon('turn', action_count))
-    action_count += 1
+    actions.append(Icon('turn'))
 
 
 def br():
-    global xpos, action_count, actions
-    canvas.create_image(50 + xpos, ypos, image=br_icon)
-    xpos += 105
-    actions.append(Icon('br', action_count))
-    action_count += 1
+    actions.append(Icon('br'))
 
 
 def wait():
-    global xpos, action_count, actions
-    canvas.create_image(50 + xpos, ypos, image=wait_icon)
-    xpos += 105
-    actions.append(Icon('wait', action_count))
-    action_count += 1
+    actions.append(Icon('wait'))
 
 
 class Icon:
-    def __init__(self, name, place):
+    def __init__(self, name):
+        global xpos, ht_icon
         self.name = name
-        self.place = place
+        self.canvas = canvas.create_image(50 + xpos, ypos, image=(get_icon(self.name + "_icon")))
         self.time = 2
         self.pos = 0
+        self.tk = ''
+        xpos += 105
 
     def open_settings(self):
         def save_val():
             self.time = time_scale.get()
             self.pos = position.get()
 
-        settingstk = Tk()
-        label1 = Label(settingstk, text="Time (S)")
+        self.tk = Tk()
+        label1 = Label(self.tk, text="Time (S)")
         label1.pack()
-        time_scale = Scale(settingstk, from_=1, to=10, orient=HORIZONTAL)
+        time_scale = Scale(self.tk, from_=1, to=10, orient=HORIZONTAL)
         time_scale.pack()
         if self.name == 'ht':
-            label1 = Label(settingstk, text="Position (Left to Right)")
+            label1 = Label(self.tk, text="Position (Left to Right)")
             label1.pack()
-            position = Scale(settingstk, from_=1, to=4, orient=HORIZONTAL)
+            position = Scale(self.tk, from_=1, to=4, orient=HORIZONTAL)
             position.pack()
         elif self.name == 'hr':
-            label1 = Label(settingstk, text="Position (Left to Right)")
+            label1 = Label(self.tk, text="Position (Left to Right)")
             label1.pack()
-            position = Scale(settingstk, from_=1, to=4, orient=HORIZONTAL)
+            position = Scale(self.tk, from_=1, to=4, orient=HORIZONTAL)
             position.pack()
         elif self.name == 'turn':
-            label1 = Label(settingstk, text="Direction (Left or Right)")
+            label1 = Label(self.tk, text="Direction (Left or Right)")
             label1.pack()
-            position = Scale(settingstk, from_=1, to=4, orient=HORIZONTAL)
+            position = Scale(self.tk, from_=1, to=4, orient=HORIZONTAL)
             position.pack()
         elif self.name == 'run':
-            label1 = Label(settingstk, text="Direction (Foreword or Backward)")
+            label1 = Label(self.tk, text="Direction (Foreword or Backward)")
             label1.pack()
-            position = Scale(settingstk, from_=1, to=4, orient=HORIZONTAL)
+            position = Scale(self.tk, from_=1, to=4, orient=HORIZONTAL)
             position.pack()
         elif self.name == 'br':
-            label1 = Label(settingstk, text="Position (Left to Right)")
+            label1 = Label(self.tk, text="Position (Left to Right)")
             label1.pack()
-            position = Scale(settingstk, from_=1, to=4, orient=HORIZONTAL)
+            position = Scale(self.tk, from_=1, to=4, orient=HORIZONTAL)
             position.pack()
-        save_values = Button(settingstk, text="Save Values", command=save_val)
+        save_values = Button(self.tk, text="Save Values", command=save_val)
         save_values.pack()
-        delete = Button(settingstk, text="Delete", command=self.__delete__)
+        delete = Button(self.tk, text="Delete", command=self.__delete__)
         delete.pack()
-        settingstk.mainloop()
+        self.tk.mainloop()
 
     def __delete__(self):
+        global xpos, actions
         self.time = 0
+        self.pos = 0
+        canvas.delete("all")
+        xpos -= 105
+        actions.remove(self)
+        self.tk.destroy()
+        for x in range(len(actions)):
+            canvas.create_image(50 + 105 * x, ypos, image=(get_icon(actions[x].name + "_icon")))
 
 
 class MouseMovement:
@@ -203,9 +204,9 @@ class MouseMovement:
         self.flag = False
 
     def mouse_pressed(self, event):
-        global action_count, actions
+        global actions
         for x in range(len(actions)):
-            if (x * 105 + 100) > event.x > (x * 105) and 250 < event.y < 350 and action_count > x:
+            if (x * 105 + 100) > event.x > (x * 105) and 250 < event.y < 350:
                 self.flag = True
                 actions[x].open_settings()
 
@@ -216,7 +217,7 @@ class MouseMovement:
 
 m = MouseMovement()
 
-canvas = Canvas(root, bg= "#1F1F1F", width="830", height="660")
+canvas = Canvas(root, bg="#1F1F1F", width="830", height="660")
 canvas.pack(side=RIGHT)
 canvas.bind('<ButtonPress-1>', m.mouse_pressed)
 canvas.bind('<ButtonRelease-1>', m.mouse_release)
