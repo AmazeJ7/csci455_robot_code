@@ -136,6 +136,13 @@ def wait():
     actions.append(Icon('wait'))
 
 
+def del_all():
+    global xpos, actions
+    canvas.delete("all")
+    xpos = 0
+    actions = []
+
+
 class Icon:
     def __init__(self, name):
         global xpos, ht_icon
@@ -217,10 +224,13 @@ class MouseMovement:
 
 m = MouseMovement()
 
-canvas = Canvas(root, bg="#1F1F1F", width="830", height="660")
+canvas = Canvas(root, bg="#1F1F1F", width="830", height="685")
 canvas.pack(side=RIGHT)
 canvas.bind('<ButtonPress-1>', m.mouse_pressed)
 canvas.bind('<ButtonRelease-1>', m.mouse_release)
+
+go = Button(root, width=13, text='GO!', bg='black', fg='white', command=go)
+go.pack(side=TOP)
 
 ht = Button(root, command=ht)
 ht.config(image=ht_icon, width=pic_size, height=pic_size)
@@ -246,8 +256,8 @@ wait = Button(root, command=wait)
 wait.config(image=wait_icon, width=pic_size, height=pic_size)
 wait.pack(side=TOP)
 
-go = Button(root, width=13, text='GO!', bg='black', fg='white', command=go)
-go.pack(side=TOP)
+del_all = Button(root, width=13, text='Delete All', bg='black', fg='white', command=del_all)
+del_all.pack(side=TOP)
 
 root.mainloop()
 
