@@ -113,27 +113,27 @@ def go():
 
 
 def ht():
-    actions.append(Icon('ht'))
+    actions.append(Action('ht'))
 
 
 def hr():
-    actions.append(Icon('hr'))
+    actions.append(Action('hr'))
 
 
 def run():
-    actions.append(Icon('run'))
+    actions.append(Action('run'))
 
 
 def turn():
-    actions.append(Icon('turn'))
+    actions.append(Action('turn'))
 
 
 def br():
-    actions.append(Icon('br'))
+    actions.append(Action('br'))
 
 
 def wait():
-    actions.append(Icon('wait'))
+    actions.append(Action('wait'))
 
 
 def del_all():
@@ -143,7 +143,7 @@ def del_all():
     actions = []
 
 
-class Icon:
+class Action:
     def __init__(self, name):
         global xpos, ht_icon
         self.name = name
