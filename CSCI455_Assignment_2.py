@@ -176,12 +176,12 @@ class Action:
         elif self.name == 'turn':
             label1 = Label(self.tk, text="Direction (Left or Right)")
             label1.pack()
-            position = Scale(self.tk, from_=1, to=4, orient=HORIZONTAL)
+            position = Scale(self.tk, from_=1, to=2, orient=HORIZONTAL)
             position.pack()
         elif self.name == 'run':
             label1 = Label(self.tk, text="Direction (Foreword or Backward)")
             label1.pack()
-            position = Scale(self.tk, from_=1, to=4, orient=HORIZONTAL)
+            position = Scale(self.tk, from_=1, to=2, orient=HORIZONTAL)
             position.pack()
         elif self.name == 'br':
             label1 = Label(self.tk, text="Position (Left to Right)")
