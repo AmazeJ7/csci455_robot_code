@@ -145,7 +145,7 @@ def del_all():
 
 class Action:
     def __init__(self, name):
-        global xpos, ht_icon
+        global xpos
         self.name = name
         self.canvas = canvas.create_image(50 + xpos, ypos, image=(get_icon(self.name + "_icon")))
         self.time = 2
