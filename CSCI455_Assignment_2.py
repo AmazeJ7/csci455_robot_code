@@ -1,9 +1,9 @@
-import Maestro
+from Maestro import Controller
 from tkinter import *
 import os
 import time
 
-# x = Maestro.Controller()
+# x = Controller()
 #
 # for chan in range(len(x.Targets)):
 #      x.setTarget(chan, 6000)
@@ -13,7 +13,7 @@ import time
 # x.setAccel(2, 30)
 # x.setAccel(3, 20)
 # x.setAccel(3, 20)
-#
+
 os.system('xset r off')
 
 xpos = 0
@@ -54,62 +54,62 @@ def get_icon(name):
 
 def go():
     print('go!')
-    for x in range(len(actions)):
-        if actions[x].name == 'ht':
-            # if actions[x].pos == 1:
-            #     x.setTarget(4, 4000)
-            # elif actions[x].pos == 2:
-            #     x.setTarget(4, 5000)
-            # elif actions[x].pos == 3:
-            #     x.setTarget(4, 7000)
-            # elif actions[x].pos == 4:
-            #     x.setTarget(4, 8000)
-            # elif actions[x].pos == 0:
-            #     x.setTarget(4, 6000)
-            time.sleep(actions[x].time)
-            # x.setTarget(4, 6000)
-        elif actions[x].name == 'hr':
-            # if actions[x].pos == 1:
-            #     x.setTarget(3, 4000)
-            # elif actions[x].pos == 2:
-            #     x.setTarget(3, 5000)
-            # elif actions[x].pos == 3:
-            #     x.setTarget(3, 7000)
-            # elif actions[x].pos == 4:
-            #     x.setTarget(3, 8000)
-            # elif actions[x].pos == 0:
-            #     x.setTarget(3, 6000)
-            time.sleep(actions[x].time)
-            # x.setTarget(3, 6000)
-        elif actions[x].name == 'run':
-            # if actions[x].pos == 1:
-            #     x.setTarget(1, 5000)
-            # elif actions[x].pos == 2:
-            #     x.setTarget(1, 7000)
-            # elif actions[x].pos == 0:
-            #     x.setTarget(1, 6000)
-            time.sleep(actions[x].time)
-            # x.setTarget(1, 6000)
-        elif actions[x].name == 'turn':
-            # if actions[x].pos == 1:
-            #     x.setTarget(2, 7000)
-            # elif actions[x].pos == 2:
-            #     x.setTarget(2, 5000)
-            # elif actions[x].pos == 0:
-            #     x.setTarget(2, 6000)
-            time.sleep(actions[x].time)
-            # x.setTarget(2, 6000)
-        elif actions[x].name == 'br':
-            # if actions[x].pos == 1:
-            #     x.setTarget(0, 4250)
-            # elif actions[x].pos == 2:
-            #     x.setTarget(0, 7750)
-            # elif actions[x].pos == 0:
-            #     x.setTarget(0, 6000)
-            time.sleep(actions[x].time)
-            # x.setTarget(0, 6000)
-        elif actions[x].name == 'wait':
-            time.sleep(actions[x].time)
+    # for x in range(len(actions)):
+    #     if actions[x].name == 'ht':
+    #         if actions[x].pos == 1:
+    #             x.setTarget(4, 4000)
+    #         elif actions[x].pos == 2:
+    #             x.setTarget(4, 5000)
+    #         elif actions[x].pos == 3:
+    #             x.setTarget(4, 7000)
+    #         elif actions[x].pos == 4:
+    #             x.setTarget(4, 8000)
+    #         elif actions[x].pos == 0:
+    #             x.setTarget(4, 6000)
+    #         time.sleep(actions[x].time)
+    #         x.setTarget(4, 6000)
+    #     elif actions[x].name == 'hr':
+    #         if actions[x].pos == 1:
+    #             x.setTarget(3, 4000)
+    #         elif actions[x].pos == 2:
+    #             x.setTarget(3, 5000)
+    #         elif actions[x].pos == 3:
+    #             x.setTarget(3, 7000)
+    #         elif actions[x].pos == 4:
+    #             x.setTarget(3, 8000)
+    #         elif actions[x].pos == 0:
+    #             x.setTarget(3, 6000)
+    #         time.sleep(actions[x].time)
+    #         x.setTarget(3, 6000)
+    #     elif actions[x].name == 'run':
+    #         if actions[x].pos == 1:
+    #             x.setTarget(1, 5000)
+    #         elif actions[x].pos == 2:
+    #             x.setTarget(1, 7000)
+    #         elif actions[x].pos == 0:
+    #             x.setTarget(1, 6000)
+    #         time.sleep(actions[x].time)
+    #         x.setTarget(1, 6000)
+    #     elif actions[x].name == 'turn':
+    #         if actions[x].pos == 1:
+    #             x.setTarget(2, 7000)
+    #         elif actions[x].pos == 2:
+    #             x.setTarget(2, 5000)
+    #         elif actions[x].pos == 0:
+    #             x.setTarget(2, 6000)
+    #         time.sleep(actions[x].time)
+    #         x.setTarget(2, 6000)
+    #     elif actions[x].name == 'br':
+    #         if actions[x].pos == 1:
+    #             x.setTarget(0, 4250)
+    #         elif actions[x].pos == 2:
+    #             x.setTarget(0, 7750)
+    #         elif actions[x].pos == 0:
+    #             x.setTarget(0, 6000)
+    #         time.sleep(actions[x].time)
+    #         x.setTarget(0, 6000)
+    #     elif actions[x].name == 'wait':
+    #         time.sleep(actions[x].time)
 
 
 def ht():
