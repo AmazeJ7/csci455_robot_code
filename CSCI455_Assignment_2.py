@@ -4,15 +4,15 @@ import time
 import os
 
 # Maestro instantiation
-controller = Controller()
-for chan in range(len(controller.Targets)):
-     controller.setTarget(chan, 6000)
-controller.setAccel(0, 10)
-controller.setAccel(1, 10)
-controller.setAccel(2, 30)
-controller.setAccel(3, 20)
-controller.setAccel(3, 20)
-os.system('xset r off')
+# controller = Controller()
+# for chan in range(len(controller.Targets)):
+#      controller.setTarget(chan, 6000)
+# controller.setAccel(0, 10)
+# controller.setAccel(1, 10)
+# controller.setAccel(2, 30)
+# controller.setAccel(3, 20)
+# controller.setAccel(3, 20)
+# os.system('xset r off')
 
 # Global Variables
 xpos = 0
@@ -22,7 +22,7 @@ pic_size = 50
 
 # Main Tk window instantiation
 root = Tk()
-root.title("Johnny and Brett do a Robot Control GUI")
+root.title("Robot Control GUI")
 
 # Icon files and subsample
 icons = [PhotoImage(file="icons/HeadTilt.png"), PhotoImage(file="icons/HeadRotate.png"),
@@ -37,58 +37,58 @@ def go():
     print('go!')
     for x in range(len(actions)):
         if actions[x].name == 'Head Tilt':
-            if actions[x].pos == 1:
-                controller.setTarget(4, 4000)
-            elif actions[x].pos == 2:
-                controller.setTarget(4, 5000)
-            elif actions[x].pos == 3:
-                controller.setTarget(4, 7000)
-            elif actions[x].pos == 4:
-                controller.setTarget(4, 8000)
-            elif actions[x].pos == 0:
-                controller.setTarget(4, 6000)
+            # if actions[x].pos == 1:
+            #     controller.setTarget(4, 4000)
+            # elif actions[x].pos == 2:
+            #     controller.setTarget(4, 5000)
+            # elif actions[x].pos == 3:
+            #     controller.setTarget(4, 7000)
+            # elif actions[x].pos == 4:
+            #     controller.setTarget(4, 8000)
+            # elif actions[x].pos == 0:
+            #     controller.setTarget(4, 6000)
             time.sleep(actions[x].time)
-            controller.setTarget(4, 6000)
+            # controller.setTarget(4, 6000)
         elif actions[x].name == 'Head Rotate':
-            if actions[x].pos == 1:
-                controller.setTarget(3, 4000)
-            elif actions[x].pos == 2:
-                controller.setTarget(3, 5000)
-            elif actions[x].pos == 3:
-                controller.setTarget(3, 7000)
-            elif actions[x].pos == 4:
-                controller.setTarget(3, 8000)
-            elif actions[x].pos == 0:
-                controller.setTarget(3, 6000)
+            # if actions[x].pos == 1:
+            #     controller.setTarget(3, 4000)
+            # elif actions[x].pos == 2:
+            #     controller.setTarget(3, 5000)
+            # elif actions[x].pos == 3:
+            #     controller.setTarget(3, 7000)
+            # elif actions[x].pos == 4:
+            #     controller.setTarget(3, 8000)
+            # elif actions[x].pos == 0:
+            #     controller.setTarget(3, 6000)
             time.sleep(actions[x].time)
-            controller.setTarget(3, 6000)
+            # controller.setTarget(3, 6000)
         elif actions[x].name == 'Move':
-            if actions[x].pos == 1:
-                controller.setTarget(1, 5000)
-            elif actions[x].pos == 2:
-                controller.setTarget(1, 7000)
-            elif actions[x].pos == 0:
-                controller.setTarget(1, 6000)
+            # if actions[x].pos == 1:
+            #     controller.setTarget(1, 5000)
+            # elif actions[x].pos == 2:
+            #     controller.setTarget(1, 7000)
+            # elif actions[x].pos == 0:
+            #     controller.setTarget(1, 6000)
             time.sleep(actions[x].time)
-            controller.setTarget(1, 6000)
+            # controller.setTarget(1, 6000)
         elif actions[x].name == 'Turn':
-            if actions[x].pos == 1:
-                controller.setTarget(2, 7000)
-            elif actions[x].pos == 2:
-                controller.setTarget(2, 5000)
-            elif actions[x].pos == 0:
-                controller.setTarget(2, 6000)
+            # if actions[x].pos == 1:
+            #     controller.setTarget(2, 7000)
+            # elif actions[x].pos == 2:
+            #     controller.setTarget(2, 5000)
+            # elif actions[x].pos == 0:
+            #     controller.setTarget(2, 6000)
             time.sleep(actions[x].time)
-            controller.setTarget(2, 6000)
+            # controller.setTarget(2, 6000)
         elif actions[x].name == 'Body Rotate':
-            if actions[x].pos == 1:
-                controller.setTarget(0, 4250)
-            elif actions[x].pos == 2:
-                controller.setTarget(0, 7750)
-            elif actions[x].pos == 0:
-                controller.setTarget(0, 6000)
+            # if actions[x].pos == 1:
+            #     controller.setTarget(0, 4250)
+            # elif actions[x].pos == 2:
+            #     controller.setTarget(0, 7750)
+            # elif actions[x].pos == 0:
+            #     controller.setTarget(0, 6000)
             time.sleep(actions[x].time)
-            controller.setTarget(0, 6000)
+            # controller.setTarget(0, 6000)
         elif actions[x].name == 'Wait':
             time.sleep(actions[x].time)
 
@@ -108,30 +108,30 @@ class Action:
         global xpos, ypos
         self.name = name
         self.icon = icon
-        if xpos < 800:
-            canvas.create_image(50 + xpos, 50 + ypos, image=self.icon)
+        if xpos < 700:
+            canvas.create_image(25 + xpos, 25 + ypos, image=self.icon)
         else:
-            ypos += 105
+            ypos += 55
             xpos = 0
-            canvas.create_image(50 + xpos, 50 + ypos, image=self.icon)
+            canvas.create_image(25 + xpos, 25 + ypos, image=self.icon)
         self.time = 2
         self.pos = 0
         self.settings_tk = ''
         self.animate_tk = ''
-        xpos += 105
+        xpos += 55
 
-    def animate(self):
-        self.animate_tk = Tk()
-        l = Label(self.animate_tk, text=self.name)
-        l.pack()
-        can = Canvas(self.animate_tk, bg="#1F1F1F", width=105 * self.time - 5, height=100)
-        can.pack()
-        for x in range(self.time):
-            can.update()
-            can.create_rectangle(0 + 105 * x, 0, 100 + 105 * x, 100, fill="red")
-            time.sleep(1)
-        self.animate_tk.destroy()
-        self.animate_tk.mainloop()
+    # def animate(self):
+    #     self.animate_tk = Tk()
+    #     l = Label(self.animate_tk, text=self.name)
+    #     l.pack()
+    #     can = Canvas(self.animate_tk, bg="#1F1F1F", width=105 * self.time - 5, height=100)
+    #     can.pack()
+    #     for x in range(self.time):
+    #         can.update()
+    #         can.create_rectangle(0 + 105 * x, 0, 100 + 105 * x, 100, fill="red")
+    #         time.sleep(1)
+    #     self.animate_tk.destroy()
+    #     self.animate_tk.mainloop()
 
     # Function to edit settings or remove instance
     def open_settings(self):
@@ -181,20 +181,20 @@ class Action:
         self.time = 0
         self.pos = 0
         canvas.delete("all")
-        xpos -= 105
-        posx = 50
-        posy = 50
+        xpos -= 55
+        posx = 25
+        posy = 25
         actions.remove(self)
         self.settings_tk.destroy()
         for x in range(len(actions)):
-            if posx < 800:
+            if posx < 700:
                 canvas.create_image(posx, posy, image=actions[x].icon)
-                posx += 105
+                posx += 55
             else:
-                posy += 105
-                posx = 50
+                posy += 55
+                posx = 25
                 canvas.create_image(posx, posy, image=actions[x].icon)
-                posx += 105
+                posx += 55
 
 
 # Mouse movement class
@@ -206,9 +206,9 @@ class MouseMovement:
         global actions
         y = 0
         for x in range(len(actions)):
-            if x == 8 * (y + 1):
+            if x == 13 * (y + 1):
                 y += 1
-            if x * 105 + 100 - 840 * y > event.x > x * 105 - 840 * y and y * 105 < event.y < y * 105 + 100:
+            if x * 55 + 50 - 715 * y > event.x > x * 55 - 715 * y and y * 55 < event.y < y * 55 + 50:
                 self.flag = True
                 actions[x].open_settings()
 
@@ -227,7 +227,7 @@ canvas.bind('<ButtonPress-1>', m.mouse_pressed)
 canvas.bind('<ButtonRelease-1>', m.mouse_release)
 
 # Root's buttons
-go = Button(root, height=3, width=4, text='GO!', bg='black', fg='white', command=go)
+go = Button(root, height=3, width=5, text='GO!', bg='black', fg='white', command=go)
 go.pack(side=TOP)
 ht = Button(root, command=lambda: actions.append(Action('Head Tilt', icons[0])), image=icons[0], width=pic_size,
             height=pic_size)
@@ -247,9 +247,9 @@ br.pack(side=TOP)
 wait = Button(root, command=lambda: actions.append(Action('Wait', icons[5])), image=icons[5], width=pic_size,
               height=pic_size)
 wait.pack(side=TOP)
-del_all = Button(root, height=3, width=4, text='Del All', bg='black', fg='white', command=del_all)
+del_all = Button(root, height=3, width=5, text='Del All', bg='black', fg='white', command=del_all)
 del_all.pack(side=TOP)
 
 # Main Tk loop
 root.mainloop()
-os.system('xset r on')
+# os.system('xset r on')
