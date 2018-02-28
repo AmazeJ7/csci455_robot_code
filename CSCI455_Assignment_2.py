@@ -1,18 +1,18 @@
-from Maestro import Controller
+from MockMaestro import Controller
 from tkinter import *
 import time
 import os
 
-# Maestro instantiation
-# controller = Controller()
-# for chan in range(len(controller.Targets)):
-#      controller.setTarget(chan, 6000)
-# controller.setAccel(0, 10)
-# controller.setAccel(1, 10)
-# controller.setAccel(2, 30)
-# controller.setAccel(3, 20)
-# controller.setAccel(3, 20)
-# os.system('xset r off')
+#Maestro instantiation
+controller = Controller()
+for chan in range(len(controller.Targets)):
+     controller.setTarget(chan, 6000)
+controller.setAccel(0, 10)
+controller.setAccel(1, 10)
+controller.setAccel(2, 30)
+controller.setAccel(3, 20)
+controller.setAccel(3, 20)
+os.system('xset r off')
 
 # Global Variables
 xpos = 0
@@ -37,58 +37,58 @@ def go():
     print('go!')
     for x in range(len(actions)):
         if actions[x].name == 'Head Tilt':
-            # if actions[x].pos == 1:
-            #     controller.setTarget(4, 4000)
-            # elif actions[x].pos == 2:
-            #     controller.setTarget(4, 5000)
-            # elif actions[x].pos == 3:
-            #     controller.setTarget(4, 7000)
-            # elif actions[x].pos == 4:
-            #     controller.setTarget(4, 8000)
-            # elif actions[x].pos == 0:
-            #     controller.setTarget(4, 6000)
+            if actions[x].pos == 1:
+                controller.setTarget(4, 4000)
+            elif actions[x].pos == 2:
+                controller.setTarget(4, 5000)
+            elif actions[x].pos == 3:
+                controller.setTarget(4, 7000)
+            elif actions[x].pos == 4:
+                controller.setTarget(4, 8000)
+            elif actions[x].pos == 0:
+                controller.setTarget(4, 6000)
             time.sleep(actions[x].time)
-            # controller.setTarget(4, 6000)
+            controller.setTarget(4, 6000)
         elif actions[x].name == 'Head Rotate':
-            # if actions[x].pos == 1:
-            #     controller.setTarget(3, 4000)
-            # elif actions[x].pos == 2:
-            #     controller.setTarget(3, 5000)
-            # elif actions[x].pos == 3:
-            #     controller.setTarget(3, 7000)
-            # elif actions[x].pos == 4:
-            #     controller.setTarget(3, 8000)
-            # elif actions[x].pos == 0:
-            #     controller.setTarget(3, 6000)
+            if actions[x].pos == 1:
+                controller.setTarget(3, 4000)
+            elif actions[x].pos == 2:
+                controller.setTarget(3, 5000)
+            elif actions[x].pos == 3:
+                controller.setTarget(3, 7000)
+            elif actions[x].pos == 4:
+                controller.setTarget(3, 8000)
+            elif actions[x].pos == 0:
+                controller.setTarget(3, 6000)
             time.sleep(actions[x].time)
-            # controller.setTarget(3, 6000)
+            controller.setTarget(3, 6000)
         elif actions[x].name == 'Move':
-            # if actions[x].pos == 1:
-            #     controller.setTarget(1, 5000)
-            # elif actions[x].pos == 2:
-            #     controller.setTarget(1, 7000)
-            # elif actions[x].pos == 0:
-            #     controller.setTarget(1, 6000)
+            if actions[x].pos == 1:
+                controller.setTarget(1, 5000)
+            elif actions[x].pos == 2:
+                controller.setTarget(1, 7000)
+            elif actions[x].pos == 0:
+                controller.setTarget(1, 6000)
             time.sleep(actions[x].time)
-            # controller.setTarget(1, 6000)
+            controller.setTarget(1, 6000)
         elif actions[x].name == 'Turn':
-            # if actions[x].pos == 1:
-            #     controller.setTarget(2, 7000)
-            # elif actions[x].pos == 2:
-            #     controller.setTarget(2, 5000)
-            # elif actions[x].pos == 0:
-            #     controller.setTarget(2, 6000)
+            if actions[x].pos == 1:
+                controller.setTarget(2, 7000)
+            elif actions[x].pos == 2:
+                controller.setTarget(2, 5000)
+            elif actions[x].pos == 0:
+                controller.setTarget(2, 6000)
             time.sleep(actions[x].time)
-            # controller.setTarget(2, 6000)
+            controller.setTarget(2, 6000)
         elif actions[x].name == 'Body Rotate':
-            # if actions[x].pos == 1:
-            #     controller.setTarget(0, 4250)
-            # elif actions[x].pos == 2:
-            #     controller.setTarget(0, 7750)
-            # elif actions[x].pos == 0:
-            #     controller.setTarget(0, 6000)
+            if actions[x].pos == 1:
+                controller.setTarget(0, 4250)
+            elif actions[x].pos == 2:
+                controller.setTarget(0, 7750)
+            elif actions[x].pos == 0:
+                controller.setTarget(0, 6000)
             time.sleep(actions[x].time)
-            # controller.setTarget(0, 6000)
+            controller.setTarget(0, 6000)
         elif actions[x].name == 'Wait':
             time.sleep(actions[x].time)
 
@@ -120,18 +120,18 @@ class Action:
         self.animate_tk = ''
         xpos += 55
 
-    # def animate(self):
-    #     self.animate_tk = Tk()
-    #     l = Label(self.animate_tk, text=self.name)
-    #     l.pack()
-    #     can = Canvas(self.animate_tk, bg="#1F1F1F", width=105 * self.time - 5, height=100)
-    #     can.pack()
-    #     for x in range(self.time):
-    #         can.update()
-    #         can.create_rectangle(0 + 105 * x, 0, 100 + 105 * x, 100, fill="red")
-    #         time.sleep(1)
-    #     self.animate_tk.destroy()
-    #     self.animate_tk.mainloop()
+    def animate(self):
+        self.animate_tk = Tk()
+        l = Label(self.animate_tk, text=self.name)
+        l.pack()
+        can = Canvas(self.animate_tk, bg="#1F1F1F", width=105 * self.time - 5, height=100)
+        can.pack()
+        for x in range(self.time):
+            can.update()
+            can.create_rectangle(0 + 105 * x, 0, 100 + 105 * x, 100, fill="red")
+            time.sleep(1)
+        self.animate_tk.destroy()
+        self.animate_tk.mainloop()
 
     # Function to edit settings or remove instance
     def open_settings(self):
