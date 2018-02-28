@@ -1,4 +1,4 @@
-from MockMaestro import Controller
+from Maestro import Controller
 from tkinter import *
 import time
 import os
@@ -50,7 +50,6 @@ def go():
                 controller.setTarget(4, 6000)
             time.sleep(actions[x].time)
             controller.setTarget(4, 6000)
-
         elif actions[x].name == 'Head Rotate':
             if actions[x].pos == 1:
                 controller.setTarget(3, 4000)
@@ -64,7 +63,6 @@ def go():
                 controller.setTarget(3, 6000)
             time.sleep(actions[x].time)
             controller.setTarget(3, 6000)
-
         elif actions[x].name == 'Move':
             if actions[x].pos == 1:
                 controller.setTarget(1, 5000)
@@ -74,7 +72,6 @@ def go():
                 controller.setTarget(1, 6000)
             time.sleep(actions[x].time)
             controller.setTarget(1, 6000)
-
         elif actions[x].name == 'Turn':
             if actions[x].pos == 1:
                 controller.setTarget(2, 7000)
@@ -85,7 +82,6 @@ def go():
             time.sleep(actions[x].time)
             controller.setTarget(2, 6000)
         elif actions[x].name == 'Body Rotate':
-
             if actions[x].pos == 1:
                 controller.setTarget(0, 4250)
             elif actions[x].pos == 2:
