@@ -221,13 +221,13 @@ class MouseMovement:
 m = MouseMovement()
 
 # Root's canvas
-canvas = Canvas(root, bg="#1F1F1F", width="740", height="440")
+canvas = Canvas(root, bg="#1F1F1F", width="740", height="443")
 canvas.pack(side=RIGHT)
 canvas.bind('<ButtonPress-1>', m.mouse_pressed)
 canvas.bind('<ButtonRelease-1>', m.mouse_release)
 
 # Root's buttons
-go = Button(root, height=3, width=5, text='GO!', bg='black', fg='white', command=go)
+go = Button(root, height=3, width=6, text='GO!', bg='black', fg='white', command=go)
 go.pack(side=TOP)
 ht = Button(root, command=lambda: actions.append(Action('Head Tilt', icons[0])), image=icons[0], width=pic_size,
             height=pic_size)
@@ -247,7 +247,7 @@ br.pack(side=TOP)
 wait = Button(root, command=lambda: actions.append(Action('Wait', icons[5])), image=icons[5], width=pic_size,
               height=pic_size)
 wait.pack(side=TOP)
-del_all = Button(root, height=3, width=5, text='Del All', bg='black', fg='white', command=del_all)
+del_all = Button(root, height=3, width=6, text='Delete All', bg='black', fg='white', command=del_all)
 del_all.pack(side=TOP)
 
 # Main Tk loop
