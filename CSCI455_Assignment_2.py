@@ -3,10 +3,10 @@ from tkinter import *
 import time
 import os
 
-#Maestro instantiation
+# Maestro instantiation
 controller = Controller()
 for chan in range(len(controller.Targets)):
-     controller.setTarget(chan, 6000)
+    controller.setTarget(chan, 6000)
 controller.setAccel(0, 10)
 controller.setAccel(1, 10)
 controller.setAccel(2, 30)
@@ -34,6 +34,7 @@ for i in range(len(icons)):
 
 # Function to run all actions
 def go():
+    global actions, xpos, ypos
     print('go!')
     for x in range(len(actions)):
         if actions[x].name == 'Head Tilt':
@@ -47,7 +48,7 @@ def go():
                 controller.setTarget(4, 8000)
             elif actions[x].pos == 0:
                 controller.setTarget(4, 6000)
-            time.sleep(actions[x].time)
+            actions[x].animate()
             controller.setTarget(4, 6000)
         elif actions[x].name == 'Head Rotate':
             if actions[x].pos == 1:
@@ -60,7 +61,7 @@ def go():
                 controller.setTarget(3, 8000)
             elif actions[x].pos == 0:
                 controller.setTarget(3, 6000)
-            time.sleep(actions[x].time)
+            actions[x].animate()
             controller.setTarget(3, 6000)
         elif actions[x].name == 'Move':
             if actions[x].pos == 1:
@@ -69,7 +70,7 @@ def go():
                 controller.setTarget(1, 7000)
             elif actions[x].pos == 0:
                 controller.setTarget(1, 6000)
-            time.sleep(actions[x].time)
+            actions[x].animate()
             controller.setTarget(1, 6000)
         elif actions[x].name == 'Turn':
             if actions[x].pos == 1:
@@ -78,7 +79,7 @@ def go():
                 controller.setTarget(2, 5000)
             elif actions[x].pos == 0:
                 controller.setTarget(2, 6000)
-            time.sleep(actions[x].time)
+            actions[x].animate()
             controller.setTarget(2, 6000)
         elif actions[x].name == 'Body Rotate':
             if actions[x].pos == 1:
@@ -87,10 +88,13 @@ def go():
                 controller.setTarget(0, 7750)
             elif actions[x].pos == 0:
                 controller.setTarget(0, 6000)
-            time.sleep(actions[x].time)
+            actions[x].animate()
             controller.setTarget(0, 6000)
         elif actions[x].name == 'Wait':
-            time.sleep(actions[x].time)
+            actions[x].animate()
+    actions = []
+    xpos = 0
+    ypos = 0
 
 
 # Function to delete all actions and reset canvas
@@ -120,18 +124,17 @@ class Action:
         self.animate_tk = ''
         xpos += 55
 
+    # Animation function
     def animate(self):
-        self.animate_tk = Tk()
-        l = Label(self.animate_tk, text=self.name)
-        l.pack()
-        can = Canvas(self.animate_tk, bg="#1F1F1F", width=105 * self.time - 5, height=100)
-        can.pack()
+        canvas.delete("all")
+        rect = []
         for x in range(self.time):
-            can.update()
-            can.create_rectangle(0 + 105 * x, 0, 100 + 105 * x, 100, fill="red")
+            # rect.append(canvas.create_rectangle(0 + 55 * x, 0, 50 + 55 * x, 50, fill="red"))
+            rect.append(canvas.create_image(25 + 55*x, 25, image=self.icon))
+        for x in range(self.time):
+            canvas.update()
+            canvas.delete(rect[self.time - x - 1])
             time.sleep(1)
-        self.animate_tk.destroy()
-        self.animate_tk.mainloop()
 
     # Function to edit settings or remove instance
     def open_settings(self):
