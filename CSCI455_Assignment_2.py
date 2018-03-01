@@ -124,7 +124,7 @@ class Action:
         self.animate_tk = ''
         xpos += 55
 
-    # Animation function
+    # Animation function!
     def animate(self):
         canvas.delete("all")
         rect = []
