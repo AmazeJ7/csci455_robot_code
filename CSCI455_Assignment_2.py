@@ -92,9 +92,17 @@ def go():
             controller.setTarget(0, 6000)
         elif actions[x].name == 'Wait':
             actions[x].animate()
-    actions = []
-    xpos = 0
-    ypos = 0
+    posx = 25
+    posy = 25
+    for x in range(len(actions)):
+        if posx < 700:
+            canvas.create_image(posx, posy, image=actions[x].icon)
+            posx += 55
+        else:
+            posy += 55
+            posx = 25
+            canvas.create_image(posx, posy, image=actions[x].icon)
+            posx += 55
 
 
 # Function to delete all actions and reset canvas
@@ -128,13 +136,18 @@ class Action:
     def animate(self):
         canvas.delete("all")
         rect = []
+        canvas.create_text(100, 130, text=self.name + " : " + str(self.time) + " seconds", fill="white")
+        if self.pos == 0:
+            canvas.create_text(100, 150, text="Waiting...", fill="white")
+        else:
+            canvas.create_text(100, 150, text="Position : " + str(self.pos), fill="white")
         for x in range(self.time):
-            # rect.append(canvas.create_rectangle(0 + 55 * x, 0, 50 + 55 * x, 50, fill="red"))
-            rect.append(canvas.create_image(25 + 55*x, 25, image=self.icon))
+            rect.append(canvas.create_image(25 + 55 * x, 200, image=self.icon))
         for x in range(self.time):
             canvas.update()
             canvas.delete(rect[self.time - x - 1])
             time.sleep(1)
+        canvas.delete("all")
 
     # Function to edit settings or remove instance
     def open_settings(self):
