@@ -266,6 +266,7 @@ wait.pack(side=TOP)
 del_all = Button(root, height=3, width=6, text='Delete All', bg='black', fg='white', command=del_all)
 del_all.pack(side=TOP)
 
-# Main Tk loop
+# Main tk loop and geometry
+root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
 root.mainloop()
-# os.system('xset r on')
+os.system('xset r on')
