@@ -237,7 +237,7 @@ class MouseMovement:
 m = MouseMovement()
 
 # Root's canvas
-canvas = Canvas(root, bg="#1F1F1F", width="740", height="443")
+canvas = Canvas(root, bg="#1F1F1F", width="730", height="443")
 canvas.pack(side=RIGHT)
 canvas.bind('<ButtonPress-1>', m.mouse_pressed)
 canvas.bind('<ButtonRelease-1>', m.mouse_release)
@@ -267,6 +267,6 @@ del_all = Button(root, height=3, width=6, text='Delete All', bg='black', fg='whi
 del_all.pack(side=TOP)
 
 # Main tk loop and geometry
-root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
+root.geometry("790x450")
 root.mainloop()
 os.system('xset r on')
