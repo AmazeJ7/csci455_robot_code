@@ -1,4 +1,4 @@
-from MockMaestro import Controller
+from Maestro import Controller
 from tkinter import *
 import time
 import os
@@ -157,35 +157,30 @@ class Action:
             self.settings_tk.destroy()
 
         self.settings_tk = Tk()
+        self.settings_tk.title("Settings")
         label1 = Label(self.settings_tk, text="Time (S)")
         label1.pack()
         time_scale = Scale(self.settings_tk, from_=1, to=10, orient=HORIZONTAL)
+        time_scale.set(self.time)
         time_scale.pack()
         if self.name == 'Head Tilt':
-            label1 = Label(self.settings_tk, text="Position (Left to Right)")
-            label1.pack()
+            label1 = Label(self.settings_tk, text="Head Tilt Position (Left to Right)")
             position = Scale(self.settings_tk, from_=1, to=4, orient=HORIZONTAL)
-            position.pack()
         elif self.name == 'Head Rotate':
-            label1 = Label(self.settings_tk, text="Position (Left to Right)")
-            label1.pack()
+            label1 = Label(self.settings_tk, text="Head Rotate Position (Left to Right)")
             position = Scale(self.settings_tk, from_=1, to=4, orient=HORIZONTAL)
-            position.pack()
         elif self.name == 'Turn':
-            label1 = Label(self.settings_tk, text="Direction (Left or Right)")
-            label1.pack()
+            label1 = Label(self.settings_tk, text="Turning Direction (Left or Right)")
             position = Scale(self.settings_tk, from_=1, to=2, orient=HORIZONTAL)
-            position.pack()
         elif self.name == 'Move':
-            label1 = Label(self.settings_tk, text="Direction (Foreword or Backward)")
-            label1.pack()
+            label1 = Label(self.settings_tk, text="Movement Direction (Foreword or Backward)")
             position = Scale(self.settings_tk, from_=1, to=2, orient=HORIZONTAL)
-            position.pack()
         elif self.name == 'Body Rotate':
-            label1 = Label(self.settings_tk, text="Position (Left to Right)")
-            label1.pack()
+            label1 = Label(self.settings_tk, text="Body Rotate Position (Left to Right)")
             position = Scale(self.settings_tk, from_=1, to=4, orient=HORIZONTAL)
-            position.pack()
+        position.set(self.pos)
+        position.pack()
+        label1.pack()
         save_values = Button(self.settings_tk, text="Save Values", command=save_val)
         save_values.pack()
         delete = Button(self.settings_tk, text="Delete", command=self.__delete__)
@@ -237,7 +232,7 @@ class MouseMovement:
 m = MouseMovement()
 
 # Root's canvas
-canvas = Canvas(root, bg="#1F1F1F", width="730", height="443")
+canvas = Canvas(root, bg="#1F1F1F", width="740", height="443")
 canvas.pack(side=RIGHT)
 canvas.bind('<ButtonPress-1>', m.mouse_pressed)
 canvas.bind('<ButtonRelease-1>', m.mouse_release)
@@ -263,10 +258,10 @@ br.pack(side=TOP)
 wait = Button(root, command=lambda: actions.append(Action('Wait', icons[5])), image=icons[5], width=pic_size,
               height=pic_size)
 wait.pack(side=TOP)
-del_all = Button(root, height=3, width=6, text='Delete All', bg='black', fg='white', command=del_all)
+del_all = Button(root, height=3, width=6, text='Clear', bg='black', fg='white', command=del_all)
 del_all.pack(side=TOP)
 
 # Main tk loop and geometry
-root.geometry("790x450")
+root.geometry("800x450")
 root.mainloop()
 os.system('xset r on')
