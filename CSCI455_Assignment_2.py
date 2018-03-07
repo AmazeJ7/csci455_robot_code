@@ -153,9 +153,9 @@ class Action:
     def open_settings(self):
         def save_val():
             self.time = time_scale.get()
-            self.settings_tk.destroy()
             if self.name != 'Wait':
                 self.pos = position.get()
+            self.settings_tk.destroy()
 
         self.settings_tk = Tk()
         self.settings_tk.title("Settings")
