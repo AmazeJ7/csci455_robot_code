@@ -1,4 +1,4 @@
-from Maestro import Controller
+from MockMaestro import Controller
 from tkinter import *
 import time
 import os
