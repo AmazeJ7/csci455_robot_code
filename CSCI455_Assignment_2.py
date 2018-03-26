@@ -153,7 +153,8 @@ class Action:
     def open_settings(self):
         def save_val():
             self.time = time_scale.get()
-            self.pos = position.get()
+            if self.name != 'Wait':
+                self.pos = position.get()
             self.settings_tk.destroy()
 
         self.settings_tk = Tk()
@@ -178,8 +179,9 @@ class Action:
         elif self.name == 'Body Rotate':
             label1 = Label(self.settings_tk, text="Body Rotate Position (Left to Right)")
             position = Scale(self.settings_tk, from_=1, to=4, orient=HORIZONTAL)
-        position.set(self.pos)
-        position.pack()
+        if self.name != 'Wait':
+            position.set(self.pos)
+            position.pack()
         label1.pack()
         save_values = Button(self.settings_tk, text="Save Values", command=save_val)
         save_values.pack()
