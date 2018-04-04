@@ -6,9 +6,9 @@ import socket
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # get local machine name
-host = socket.gethostname()
+host = '10.200.49.223'
 
-port = 9999
+port = 5555
 
 # connection to hostname on the port.
 s.connect((host, port))
