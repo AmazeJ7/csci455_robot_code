@@ -11,7 +11,7 @@ host = '10.200.49.223'
 port = 5555
 
 # connection to hostname on the port.
-s.connect(('192.168.1.8', port))
+s.connect(('192.168.1.214', port))
 
 # Receive no more than 1024 bytes
 msg = s.recv(1024)
