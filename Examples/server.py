@@ -3,7 +3,6 @@ import socket
 
 # create a socket object
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-<<<<<<< HEAD
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 # get local machine name
@@ -12,13 +11,10 @@ host = s.getsockname()[0]
 s.close
 print(host)
 port = 9999
-=======
 
 # get local machine name
 host = socket.getIpAddress()
-
 port = 5555
->>>>>>> origin/master
 
 # bind to the port
 serversocket.bind((host, port))
