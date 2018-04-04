@@ -31,15 +31,30 @@ print(host)
 s.bind((host, port))
 s.listen(5)
 
-
 while True:
     print('Hi')
     s_2, ip = s.accept()
     print("Got a connection from %s" % str(ip))
-    msg = 'Thank you for connecting\r\n'
+    msg = 'hello\r\n'
     s_2.send(msg.encode('ascii'))
     msg_back = s_2.recv(1024)
     print(msg_back.decode('ascii'))
 
+
+def receive():
+    while True:
+        r = s_2.recv(1024)
+        if r.decode('ascii') == "move":
+            s_2.close()
+        if r.decode('ascii') == 'fun':
+            msg = 'hello\r\n'
+            s_2.send(msg.encode('ascii'))
+
+
+rt = threading.Thread(target=recieve)
+rt.start()
+
+while True:
+    pass
 
 os.system('xset r on')

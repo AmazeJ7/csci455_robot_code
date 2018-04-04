@@ -40,9 +40,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button speakBtn = (Button) findViewById(R.id.speakButton);
-        speakBtn.setOnClickListener(this);
-
         Button connectBtn = (Button) findViewById(R.id.connect);
         connectBtn.setOnClickListener(this);
 
@@ -62,6 +59,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Thread net = new Thread(network);
         net.start();
 
+        tts = new TTS(this);
+        tts.start();
+
 
     }
 
@@ -70,24 +70,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void handleMessage(Message msg) {
                 String msgData = msg.getData().getString("started");
                 Log.d(TAG, "received message from Network: " + msgData);
+                tts.handler.sendMessage(msg);
             }
         };
     }
 
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.speakButton:
-                EditText text = (EditText) findViewById(R.id.textBox);
-                String speech = text.getText().toString();
-                Message sendMsg = tts.handler.obtainMessage();
-                Bundle b = new Bundle();
-                b.putString("TT",speech);
-                sendMsg.setData(b);
-                tts.handler.sendMessage(sendMsg);
-                //Log.d(TAG,speech);
-                break;
             case R.id.connect:
-                Message m = network.handler.obtainMessage();
                 break;
             case R.id.micBtn:
                 Log.d(TAG,"mic button pressed");
@@ -100,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Talk to me.");
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say a command");
         //intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 1000);
         try {
             startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
@@ -110,11 +100,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void sendOnNetwork(String msg) {
-        Message toClient = network.handler.obtainMessage();
+        Message toClient = network.h.obtainMessage();
         Bundle n = new Bundle();
         n.putString("N", msg);
         toClient.setData(n);
-        network.handler.sendMessage(toClient);
+        network.h.sendMessage(toClient);
     }
 
     public void sendToTTS(String msg) {
@@ -134,23 +124,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d(TAG, "voice recieved");
                 if (resultCode == RESULT_OK && null != data) {
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    TextView voiceInputView = (TextView) findViewById(R.id.voiceInput);
                     sendOnNetwork(result.get(0));
-                }
-                break;
-            }
-            case MY_DATA_CHECK_CODE: {
-                // if user has TTS data, assign TTS object
-                if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
-                    Log.d(TAG, "tts found");
-                    tts = new TTS(this);
-                    tts.start();
-                }
-                // otherwise ask user to install TTS data
-                else {
-                    Intent installTTSIntent = new Intent();
-                    installTTSIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-                    startActivity(installTTSIntent);
                 }
                 break;
             }

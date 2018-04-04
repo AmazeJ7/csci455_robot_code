@@ -14,8 +14,8 @@ public class Network implements Runnable{
     TTS tts;
     Socket s;
     Send send;
-    Receive receive;
-    Handler handler;
+    Receive r;
+    Handler h;
 
     public Network(TTS tts) {
         this.tts = tts;
@@ -29,8 +29,8 @@ public class Network implements Runnable{
             e.printStackTrace();
         }
 
-        receive = new Receive(s, tts);
-        Thread rt = new Thread(receive);
+        r = new Receive(s, tts);
+        Thread rt = new Thread(r);
         rt.start();
 
         send = new Send(s);
@@ -38,12 +38,12 @@ public class Network implements Runnable{
         st.start();
 
         Looper.prepare();
-        handler = new Handler() {
+        h = new Handler() {
             public void handleMessage(Message msg) {
-                String sendMessage = msg.getData().getString("N");
+                String msg_send = msg.getData().getString("N");
                 Message m = send.h.obtainMessage();
                 Bundle b = new Bundle();
-                b.putString("S", sendMessage);
+                b.putString("S", msg_send);
                 m.setData(b);
                 send.h.sendMessage(m);
             }
