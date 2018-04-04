@@ -38,6 +38,8 @@ while True:
     print("Got a connection from %s" % str(ip))
     msg = 'Thank you for connecting\r\n'
     s_2.send(msg.encode('ascii'))
+    msg_back = s_2.recv(1024)
+    print(msg_back.decode('ascii'))
 
 
 os.system('xset r on')
