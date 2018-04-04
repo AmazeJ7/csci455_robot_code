@@ -58,6 +58,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         handleSocketMessages();
 
+        network = new Network(tts);
+        Thread net = new Thread(network);
+        net.start();
+
 
     }
 
@@ -79,13 +83,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Bundle b = new Bundle();
                 b.putString("TT",speech);
                 sendMsg.setData(b);
-
                 tts.handler.sendMessage(sendMsg);
                 //Log.d(TAG,speech);
                 break;
             case R.id.connect:
-                network = new Network(tts);
-                network.start();
+                Message m = network.handler.obtainMessage();
                 break;
             case R.id.micBtn:
                 Log.d(TAG,"mic button pressed");
@@ -107,24 +109,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    public void sendOnNetwork(String msg) {
+        Message toClient = network.handler.obtainMessage();
+        Bundle n = new Bundle();
+        n.putString("N", msg);
+        toClient.setData(n);
+        network.handler.sendMessage(toClient);
+    }
+
+    public void sendToTTS(String msg) {
+        Message sendMsg = tts.handler.obtainMessage();
+        Bundle b = new Bundle();
+        b.putString("TT", "10:10:" + msg);
+        sendMsg.setData(b);
+        tts.handler.sendMessage(sendMsg);
+    }
+
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
             case REQ_CODE_SPEECH_INPUT: {
-                Log.d(TAG,"voice recieved");
+                Log.d(TAG, "voice recieved");
                 if (resultCode == RESULT_OK && null != data) {
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     TextView voiceInputView = (TextView) findViewById(R.id.voiceInput);
-                    voiceInputView.setText(result.get(0));
+                    sendOnNetwork(result.get(0));
                 }
                 break;
             }
-            case MY_DATA_CHECK_CODE:{
+            case MY_DATA_CHECK_CODE: {
                 // if user has TTS data, assign TTS object
                 if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
-                    Log.d(TAG,"tts found");
+                    Log.d(TAG, "tts found");
                     tts = new TTS(this);
                     tts.start();
                 }
@@ -138,26 +156,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
-
-    public static String getIpAddress() {
-        String ipAddress = "Unable to Fetch IP..";
-        try {
-            Enumeration en;
-            en = NetworkInterface.getNetworkInterfaces();
-            while (en.hasMoreElements()) {
-                NetworkInterface intf = (NetworkInterface) en.nextElement();
-                for (Enumeration enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
-                    InetAddress inetAddress = (InetAddress) enumIpAddr.nextElement();
-                    if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
-                        ipAddress = inetAddress.getHostAddress();
-                        return ipAddress;
-                    }
-                }
-            }
-        } catch (SocketException ex) {
-            ex.printStackTrace();
-        }
-        return ipAddress;
-    }
-
 }
