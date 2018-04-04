@@ -11,7 +11,7 @@ host = socket.gethostname()
 port = 9999
 
 # connection to hostname on the port.
-s.connect((host, port))
+s.connect(('192.168.1.8', port))
 
 # Receive no more than 1024 bytes
 msg = s.recv(1024)
