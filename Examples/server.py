@@ -2,13 +2,15 @@
 import socket
 
 # create a socket object
-serversocket = socket.socket(
-    socket.AF_INET, socket.SOCK_STREAM)
+serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 # get local machine name
-host = ''
-print("host: " , host)
-port = 5555
+s.connect(('10.255.255.255', 1))
+host = s.getsockname()[0]
+s.close
+print(host)
+port = 9999
 
 # bind to the port
 serversocket.bind((host, port))
@@ -17,7 +19,7 @@ serversocket.bind((host, port))
 serversocket.listen(5)
 
 while True:
-    print("server started")
+    print('Hi')
     # establish a connection
     clientsocket, addr = serversocket.accept()
 
