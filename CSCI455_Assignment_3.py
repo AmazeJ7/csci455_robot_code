@@ -1,4 +1,4 @@
-from MockMaestro import Controller
+from Maestro import Controller
 from tkinter import *
 import time
 import os
@@ -31,7 +31,7 @@ root.title('Robot Control GUI')
 # Socket setup
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 temp_s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-temp_s.connect(('10.255.255.255', 1))
+temp_s.connect(('', 1))
 host = temp_s.getsockname()[0]
 temp_s.close
 print(host)
