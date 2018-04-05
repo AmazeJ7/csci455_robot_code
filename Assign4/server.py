@@ -6,9 +6,9 @@ serversocket = socket.socket(
     socket.AF_INET, socket.SOCK_STREAM)
 
 # get local machine name
-host = socket.gethostname()
-
-port = 9999
+host = ''
+print("host: " , host)
+port = 5555
 
 # bind to the port
 serversocket.bind((host, port))
@@ -17,6 +17,7 @@ serversocket.bind((host, port))
 serversocket.listen(5)
 
 while True:
+    print("server started")
     # establish a connection
     clientsocket, addr = serversocket.accept()
 
