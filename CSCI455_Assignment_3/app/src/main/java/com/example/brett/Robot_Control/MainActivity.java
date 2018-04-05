@@ -30,7 +30,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final String TAG = "Robot Control";
     TTS tts;
-    Network network;
+    Network n;
+    Handler h;
     private static final int MY_DATA_CHECK_CODE = 0; // check user data for TTS
     private static final int REQ_CODE_SPEECH_INPUT = 1;
 
@@ -55,16 +56,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tts = new TTS(this);
         tts.start();
 
-        network = new Network(tts, this);
-        Thread net = new Thread(network);
+        n = new Network(tts, this);
+        Thread net = new Thread(n);
         net.start();
+
+        h = new Handler() {
+            public void handleMessage(Message msg) {
+                startVoiceInput();
+            }
+        };
     }
 
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.connect:
-                network = new Network(tts, this);
-                Thread net = new Thread(network);
+                n = new Network(tts, this);
+                Thread net = new Thread(n);
                 net.start();
                 break;
             case R.id.micBtn:
@@ -73,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
+
 
     public void startVoiceInput() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -88,11 +96,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void sendOnNetwork(String msg) {
-        Message toClient = network.h.obtainMessage();
-        Bundle n = new Bundle();
-        n.putString("N", msg);
-        toClient.setData(n);
-        network.h.sendMessage(toClient);
+        Message toClient = n.h.obtainMessage();
+        Bundle b = new Bundle();
+        b.putString("N", msg);
+        toClient.setData(b);
+        n.h.sendMessage(toClient);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -104,8 +112,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (resultCode == RESULT_OK && null != data) {
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     sendOnNetwork(result.get(0));
-                    tts = new TTS(this);
-                    tts.start();
                 }
                 break;
             }

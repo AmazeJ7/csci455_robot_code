@@ -20,9 +20,9 @@ os.system('xset r off')
 xpos = 0
 ypos = 0
 actions = []
-pic_size = 50
+actions_inv =[]
+pic_size = 40
 port = 7777
-
 
 # Main Tk window instantiation
 root = Tk()
@@ -41,9 +41,10 @@ s.listen(5)
 # Icon files and subsample
 icons = [PhotoImage(file='icons/HeadTilt.png'), PhotoImage(file='icons/HeadRotate.png'),
          PhotoImage(file='icons/Move.png'), PhotoImage(file='icons/Rotate.png'),
-         PhotoImage(file='icons/BodyRotate.png'), PhotoImage(file='icons/Wait.png')]
+         PhotoImage(file='icons/BodyRotate.png'), PhotoImage(file='icons/Wait.png'),
+         PhotoImage(file='icons/STT.png'), PhotoImage(file='icons/TTS.png')]
 for i in range(len(icons)):
-    icons[i] = icons[i].subsample(4, 4)
+    icons[i] = icons[i].subsample(5, 5)
 
 
 # Function to initiate the socket
@@ -60,30 +61,46 @@ def init_socket():
 # Function to receive STT commands
 def receive(s_2):
     while True:
+        global actions, actions_inv, stt_thread
         r = s_2.recv(1024)
         msg = r.decode('ascii')
         print('Received: ' + msg)
         msg_parts = msg.split()
         if msg_parts[0] == 'move':
             actions.append(Action('Move', icons[2]))
+            actions_inv.append(Action('Move', icons[2]))
             if msg_parts[1] == 'for':
                 actions[len(actions)-1].time = int(msg_parts[2])
+                actions_inv[len(actions)-1].time = int(msg_parts[2])
             elif msg_parts[1] == 'forward':
                 if len(msg_parts) > 2:
                     actions[len(actions)-1].time = int(msg_parts[3])
+                    actions_inv[len(actions)-1].time = int(msg_parts[3])
                 actions[len(actions)-1].pos = 1
+                actions_inv[len(actions)-1].pos = 2
             elif msg_parts[1] == 'backward':
                 if len(msg_parts) > 2:
                     actions[len(actions)-1].time = int(msg_parts[3])
+                    actions_inv[len(actions)-1].time = int(msg_parts[3])
                 actions[len(actions)-1].pos = 2
-        elif msg == 'run' or msg == 'go':
-            run('andy')
+                actions_inv[len(actions)-1].pos = 2
+        elif msg_parts[0] == 'run' or msg_parts[0] == 'go':
+            if len(msg_parts) > 1:
+                if msg_parts[1] == 'home':
+                    actions = actions_inv
+                    run('andy')
+            else:
+                run('andy')
         elif msg_parts[0] == 'turn':
             actions.append(Action('Turn', icons[3]))
             if msg_parts[1] == 'left':
                 actions[len(actions)-1].pos = 1
+                actions_inv[len(actions)-1].pos = 2
+                actions_inv[len(actions)-1].time = 6
             elif msg_parts[1] == 'right':
                 actions[len(actions)-1].pos = 2
+                actions_inv[len(actions)-1].pos = 1
+                actions_inv[len(actions)-1].time = 6
         elif msg_parts[0] == 'rotate':
             if msg_parts[1] == 'body':
                 actions.append(Action('Body Rotate', icons[4]))
@@ -111,12 +128,14 @@ def receive(s_2):
             del_all()
         if msg_parts[len(msg_parts)-1] == 'run' or msg_parts[len(msg_parts)-1] == 'go':
             run('andy')
+        stt_thread.kill()
 
 
 # Function to ask for speech
 def send_stt():
-    send_message = "get speech\r\n"
-    s_2.send(send_message.encode('ascii'))
+    while True:
+        send_message = 'get speech\r\n'
+        s_2.send(send_message.encode('ascii'))
 
 
 # Function to run all actions
@@ -127,7 +146,7 @@ def run(who):
         actions[x].who = who
     for x in range(len(actions)):
         if actions[x].name == 'Head Tilt':
-            send_message = "tilting head\r\n"
+            send_message = 'tilting head\r\n'
             s_2.send(send_message.encode('ascii'))
             if actions[x].pos == 1:
                 controller.setTarget(4, 4000)
@@ -142,7 +161,7 @@ def run(who):
             actions[x].animate()
             controller.setTarget(4, 6000)
         elif actions[x].name == 'Head Rotate':
-            send_message = "rotating head\r\n"
+            send_message = 'rotating head\r\n'
             s_2.send(send_message.encode('ascii'))
             if actions[x].pos == 1:
                 controller.setTarget(3, 4000)
@@ -157,7 +176,7 @@ def run(who):
             actions[x].animate()
             controller.setTarget(3, 6000)
         elif actions[x].name == 'Move':
-            send_message = "moving\r\n"
+            send_message = 'moving\r\n'
             s_2.send(send_message.encode('ascii'))
             if actions[x].pos == 1:
                 controller.setTarget(1, 5000)
@@ -168,7 +187,7 @@ def run(who):
             actions[x].animate()
             controller.setTarget(1, 6000)
         elif actions[x].name == 'Turn':
-            send_message = "turning\r\n"
+            send_message = 'turning\r\n'
             s_2.send(send_message.encode('ascii'))
             if actions[x].pos == 1:
                 controller.setTarget(2, 7000)
@@ -179,7 +198,7 @@ def run(who):
             actions[x].animate()
             controller.setTarget(2, 6000)
         elif actions[x].name == 'Body Rotate':
-            send_message = "rotating body\r\n"
+            send_message = 'rotating body\r\n'
             s_2.send(send_message.encode('ascii'))
             if actions[x].pos == 1:
                 controller.setTarget(0, 4250)
@@ -190,8 +209,22 @@ def run(who):
             actions[x].animate()
             controller.setTarget(0, 6000)
         elif actions[x].name == 'Wait':
-            send_message = "waiting\r\n"
+            send_message = 'waiting\r\n'
             s_2.send(send_message.encode('ascii'))
+            actions[x].animate()
+        elif actions[x].name == 'TTS':
+            send_message = 'nothing here\r\n'
+            if actions[x].pos == 1:
+                send_message = 'nothing here\r\n'
+            elif actions[x].pos == 2:
+                send_message = 'something here\r\n'
+            elif actions[x].pos == 3:
+                send_message = 'you are not nice\r\n'
+            elif actions[x].pos == 4:
+                send_message = 'hello friend\r\n'
+            s_2.send(send_message.encode('ascii'))
+            actions[x].animate()
+        elif actions[x].name == 'STT':
             actions[x].animate()
     posx = 25
     posy = 25
@@ -208,17 +241,18 @@ def run(who):
 
 # Function to delete all actions and reset canvas
 def del_all():
-    global xpos, ypos, actions
+    global xpos, ypos, actions, actions_inv
     canvas.delete('all')
     xpos = 0
     ypos = 0
     actions = []
+    actions_inv =[]
 
 
 # Class to represent an action to be run
 class Action:
     def __init__(self, name, icon):
-        global xpos, ypos
+        global xpos, ypos, stt_thread
         self.name = name
         self.icon = icon
         if xpos < 700:
@@ -231,31 +265,35 @@ class Action:
         self.pos = 0
         self.settings_tk = ''
         self.animate_tk = ''
-        self.who =''
+        self.who = ''
         xpos += 55
 
     # Animation function!
     def animate(self):
         canvas.delete('all')
-        rect = []
-        canvas.create_text(100, 130, text=self.name + ' : ' + str(self.time) + ' seconds', fill='white')
-        if self.pos == 0:
-            canvas.create_text(100, 150, text='Waiting...', fill='white')
+        if self.name == 'STT':
+            stt_thread = threading.Thread(target=send_stt())
+            stt_thread.start()
         else:
-            canvas.create_text(100, 150, text='Position : ' + str(self.pos), fill='white')
-        for x in range(self.time):
-            rect.append(canvas.create_image(25 + 55 * x, 200, image=self.icon))
-        if self.who == 'andy':
+            rect = []
+            canvas.create_text(100, 130, text=self.name + ' : ' + str(self.time) + ' seconds', fill='white')
+            if self.pos == 0:
+                canvas.create_text(100, 150, text='Waiting...', fill='white')
+            else:
+                canvas.create_text(100, 150, text='Position : ' + str(self.pos), fill='white')
             for x in range(self.time):
-                time.sleep(1)
-                canvas.update()
-                canvas.delete(rect[self.time - x - 1])
-        elif self.who == 'button':
-            for x in range(self.time):
-                canvas.update()
-                canvas.delete(rect[self.time - x - 1])
-                time.sleep(1)
-        canvas.delete('all')
+                rect.append(canvas.create_image(25 + 55 * x, 200, image=self.icon))
+            if self.who == 'andy':
+                for x in range(self.time):
+                    time.sleep(1)
+                    canvas.update()
+                    canvas.delete(rect[self.time - x - 1])
+            elif self.who == 'button':
+                for x in range(self.time):
+                    canvas.update()
+                    canvas.delete(rect[self.time - x - 1])
+                    time.sleep(1)
+            canvas.delete('all')
 
     # Function to edit settings or remove instance
     def open_settings(self):
@@ -287,7 +325,10 @@ class Action:
         elif self.name == 'Body Rotate':
             label1 = Label(self.settings_tk, text='Body Rotate Position (Left to Right)')
             position = Scale(self.settings_tk, from_=1, to=2, orient=HORIZONTAL)
-        if self.name != 'Wait':
+        elif self.name == 'TTS':
+            label1 = Label(self.settings_tk, text='Body Rotate Position (Left to Right)')
+            position = Scale(self.settings_tk, from_=1, to=4, orient=HORIZONTAL)
+        if self.name != 'Wait' or self.name != 'STT':
             position.set(self.pos)
             position.pack()
         label1.pack()
@@ -342,13 +383,13 @@ class MouseMovement:
 m = MouseMovement()
 
 # Root's canvas
-canvas = Canvas(root, bg='#1F1F1F', width='740', height='443')
+canvas = Canvas(root, bg='#1F1F1F', width='750', height='443')
 canvas.pack(side=RIGHT)
 canvas.bind('<ButtonPress-1>', m.mouse_pressed)
 canvas.bind('<ButtonRelease-1>', m.mouse_release)
 
 # Root's buttons
-go = Button(root, height=2, width=6, text='GO!', bg='black', fg='white', command=lambda: run('button'))
+go = Button(root, height=2, width=5, text='GO!', bg='black', fg='white', command=lambda: run('button'))
 go.pack(side=TOP)
 ht = Button(root, command=lambda: actions.append(Action('Head Tilt', icons[0])), image=icons[0], width=pic_size, height=pic_size)
 ht.pack(side=TOP)
@@ -362,10 +403,12 @@ br = Button(root, command=lambda: actions.append(Action('Body Rotate', icons[4])
 br.pack(side=TOP)
 wait = Button(root, command=lambda: actions.append(Action('Wait', icons[5])), image=icons[5], width=pic_size, height=pic_size)
 wait.pack(side=TOP)
-del_all_button = Button(root, height=2, width=6, text='Clear', bg='black', fg='white', command=del_all)
+stt_button = Button(root, command=lambda: actions.append(Action('STT', icons[6])), image=icons[6], width=pic_size, height=pic_size)
+stt_button.pack(side=TOP)
+tts_button = Button(root, command=lambda: actions.append(Action('TTS', icons[7])), image=icons[7], width=pic_size, height=pic_size)
+tts_button.pack(side=TOP)
+del_all_button = Button(root, height=2, width=5, text='Clear', bg='black', fg='white', command=del_all)
 del_all_button.pack(side=TOP)
-speak_button = Button(root, height=2, width=6, text='Speak', bg='black', fg='white', command=send_stt)
-speak_button.pack(side=TOP)
 
 # Socket thread init
 init_socket_thread = threading.Thread(target=init_socket)

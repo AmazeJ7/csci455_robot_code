@@ -26,7 +26,7 @@ public class Network implements Runnable{
     @Override
     public void run(){
         try{
-            s = new Socket("192.168.1.214", 7777);
+            s = new Socket("10.152.171.167", 7777);
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -51,6 +51,5 @@ public class Network implements Runnable{
             }
         };
         Looper.loop();
-
     }
 }

@@ -21,7 +21,7 @@ public class TTS extends Thread implements TextToSpeech.OnInitListener {
 
     private TextToSpeech tts;
     private Context context;
-    public Handler handler;
+    public Handler h;
     private String last;
 
     TTS(Context con) {
@@ -41,7 +41,7 @@ public class TTS extends Thread implements TextToSpeech.OnInitListener {
 
     public void run() {
         Looper.prepare();
-        handler = new Handler() {
+        h = new Handler() {
             public void handleMessage(Message msg) {
                 String msg_data = msg.getData().getString("TT");
                 String[] msg_parts = msg_data.split(":");
@@ -54,7 +54,6 @@ public class TTS extends Thread implements TextToSpeech.OnInitListener {
                 speak(msg_out);
             }
         };
-
         Looper.loop();
     }
 
