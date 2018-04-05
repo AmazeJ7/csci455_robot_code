@@ -27,13 +27,13 @@ public class Receive implements Runnable{
                 String rec = b.readLine();
                 System.out.println("pad"+rec+"pad");
                 if (rec.equals("get speech")) {
-                    m.startVoiceInput();
+                    m.h.sendEmptyMessage(0);
                 } else if (rec != null) {
-                    Message msg = Message.obtain(tts.handler);
+                    Message msg = Message.obtain(tts.h);
                     Bundle b = new Bundle();
                     b.putString("TT", "10:10:" + rec);
                     msg.setData(b);
-                    tts.handler.sendMessage(msg);
+                    tts.h.sendMessage(msg);
                 }
             }
         } catch (IOException e) {
