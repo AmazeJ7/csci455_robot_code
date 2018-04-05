@@ -33,16 +33,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Network network;
     private static final int MY_DATA_CHECK_CODE = 0; // check user data for TTS
     private static final int REQ_CODE_SPEECH_INPUT = 1;
-    public Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Buttons
         Button connectBtn = (Button) findViewById(R.id.connect);
         connectBtn.setOnClickListener(this);
-
         ImageButton micBtn = (ImageButton) findViewById(R.id.micBtn);
         micBtn.setOnClickListener(this);
 
@@ -53,30 +52,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // start above action, passing in check data variable
         startActivityForResult(checkTTSIntent, MY_DATA_CHECK_CODE);
 
-        handleSocketMessages();
-
         tts = new TTS(this);
         tts.start();
 
-        network = new Network(tts);
+        network = new Network(tts, this);
         Thread net = new Thread(network);
         net.start();
-    }
-
-    private void handleSocketMessages(){
-        handler = new Handler(Looper.getMainLooper()) {
-            public void handleMessage(Message msg) {
-                String msgData = msg.getData().getString("started");
-                Log.d(TAG, "received message from Network: " + msgData);
-                sendToTTS(msgData);
-            }
-        };
     }
 
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.connect:
-                sendToTTS("hello can you hear me");
+                network = new Network(tts, this);
+                Thread net = new Thread(network);
+                net.start();
                 break;
             case R.id.micBtn:
                 Log.d(TAG,"mic button pressed");
@@ -85,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void startVoiceInput() {
+    public void startVoiceInput() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
@@ -105,15 +94,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         toClient.setData(n);
         network.h.sendMessage(toClient);
     }
-
-    public void sendToTTS(String msg) {
-        Message sendMsg = tts.handler.obtainMessage();
-        Bundle b = new Bundle();
-        b.putString("TT", "10:10:" + msg);
-        sendMsg.setData(b);
-        tts.handler.sendMessage(sendMsg);
-    }
-
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

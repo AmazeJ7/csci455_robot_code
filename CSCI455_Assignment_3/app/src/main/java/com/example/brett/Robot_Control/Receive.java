@@ -15,8 +15,9 @@ public class Receive implements Runnable{
     Socket s;
     BufferedReader b;
     TTS tts;
+    MainActivity m;
 
-    public Receive(Socket s, TTS tts) {this.tts = tts; this.s = s;}
+    public Receive(Socket s, TTS tts, MainActivity m) {this.tts = tts; this.s = s; this.m = m;}
 
     @Override
     public void run() {
@@ -24,9 +25,10 @@ public class Receive implements Runnable{
             b = new BufferedReader(new InputStreamReader(s.getInputStream()));
             while(true) {
                 String rec = b.readLine();
-                System.out.println("Received " + rec);
-
-                if (rec != null) {
+                System.out.println("pad"+rec+"pad");
+                if (rec.equals("get speech")) {
+                    m.startVoiceInput();
+                } else if (rec != null) {
                     Message msg = Message.obtain(tts.handler);
                     Bundle b = new Bundle();
                     b.putString("TT", "10:10:" + rec);
