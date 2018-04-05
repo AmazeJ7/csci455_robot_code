@@ -30,9 +30,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final String TAG = "Robot Control";
     TTS tts;
-    Network network;
+    STT stt;
+
     private static final int MY_DATA_CHECK_CODE = 0; // check user data for TTS
-    private static final int REQ_CODE_SPEECH_INPUT = 1;
     public Handler handler;
 
     @Override
@@ -58,9 +58,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tts = new TTS(this);
         tts.start();
 
-        network = new Network(tts);
-        Thread net = new Thread(network);
-        net.start();
+        stt = new STT(this,tts);
+        Thread sttThread = new Thread(stt);
+        sttThread.start();
     }
 
     private void handleSocketMessages(){
@@ -80,31 +80,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.micBtn:
                 Log.d(TAG,"mic button pressed");
-                startVoiceInput();
+                Message sendMsg = stt.h.obtainMessage();
+                stt.h.sendMessage(sendMsg);
                 break;
         }
     }
 
-    private void startVoiceInput() {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say a command");
-        //intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 1000);
-        try {
-            startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
-        } catch (ActivityNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void sendOnNetwork(String msg) {
-        Message toClient = network.h.obtainMessage();
-        Bundle n = new Bundle();
-        n.putString("N", msg);
-        toClient.setData(n);
-        network.h.sendMessage(toClient);
-    }
 
     public void sendToTTS(String msg) {
         Message sendMsg = tts.handler.obtainMessage();
@@ -115,20 +96,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode) {
-            case REQ_CODE_SPEECH_INPUT: {
-                Log.d(TAG, "voice recieved");
-                if (resultCode == RESULT_OK && null != data) {
-                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    sendOnNetwork(result.get(0));
-                    tts = new TTS(this);
-                    tts.start();
-                }
-                break;
-            }
-        }
-    }
 }
