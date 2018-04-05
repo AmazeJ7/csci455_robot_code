@@ -23,6 +23,7 @@ actions = []
 pic_size = 50
 port = 9999
 
+
 # Main Tk window instantiation
 root = Tk()
 root.title('Robot Control GUI')
@@ -45,28 +46,49 @@ for i in range(len(icons)):
     icons[i] = icons[i].subsample(4, 4)
 
 
-# Function to receive STT commands
-def receive():
+# Function to initiate the socket
+def init_socket():
     while True:
         print('Listening')
         s_2, ip = s.accept()
         print('Got a connection from %s' % str(ip))
+        rt = threading.Thread(target=receive(s_2))
+        rt.start()
+
+
+# Function to receive STT commands
+def receive(s_2):
+    while True:
         r = s_2.recv(1024)
         msg = r.decode('ascii')
-        if msg == 'move':
-            actions.append(Action('Move', icons[2]))
-        elif msg == 'run':
-            run()
-        elif msg == 'turn':
-            actions.append(Action('Turn', icons[3]))
-        elif msg == 'rotate body':
-            actions.append(Action('Body Rotate', icons[4]))
-        elif msg == 'rotate head':
-            actions.append(Action('Head Rotate', icons[1]))
-        elif msg == 'tilt head':
-            actions.append(Action('Head Tilt', icons[0]))
-        elif msg == 'wait':
-            actions.append(Action('Wait', icons[0]))
+        if len(msg) < 10:
+            msg_parts = msg.split()
+            if msg_parts[0] == 'move':
+                actions.append(Action('Move', icons[2]))
+                # if msg_parts[1] == 'for':
+                #     actions[len(actions)-1].time = msg_parts[2]
+                # elif msg_parts[1] == 'forward':
+                #     if msg_parts[2] == 'for':
+                #         actions[len(actions) - 1].time = msg_parts[3]
+                # elif msg_parts[1] == 'backward':
+                #     if msg_parts[2] == 'for':
+                #         actions[len(actions) - 1].time = msg_parts[3]
+            elif msg == 'run' or msg == 'go':
+                run()
+            elif msg == 'turn':
+                actions.append(Action('Turn', icons[3]))
+            elif msg == 'rotate body':
+                actions.append(Action('Body Rotate', icons[4]))
+            elif msg == 'rotate head':
+                actions.append(Action('Head Rotate', icons[1]))
+            elif msg == 'tilt head':
+                actions.append(Action('Head Tilt', icons[0]))
+            elif msg == 'wait':
+                actions.append(Action('Wait', icons[0]))
+            elif msg == 'clear' or msg == 'delete all':
+                del_all()
+                send_message = "fuck you I can work\r\n"
+                s_2.send(send_message.encode('ascii'))
 
 
 # Function to run all actions
@@ -279,29 +301,24 @@ canvas.bind('<ButtonRelease-1>', m.mouse_release)
 # Root's buttons
 go = Button(root, height=3, width=6, text='GO!', bg='black', fg='white', command=run)
 go.pack(side=TOP)
-ht = Button(root, command=lambda: actions.append(Action('Head Tilt', icons[0])), image=icons[0], width=pic_size,
-            height=pic_size)
+ht = Button(root, command=lambda: actions.append(Action('Head Tilt', icons[0])), image=icons[0], width=pic_size, height=pic_size)
 ht.pack(side=TOP)
-hr = Button(root, command=lambda: actions.append(Action('Head Rotate', icons[1])), image=icons[1], width=pic_size,
-            height=pic_size)
+hr = Button(root, command=lambda: actions.append(Action('Head Rotate', icons[1])), image=icons[1], width=pic_size, height=pic_size)
 hr.pack(side=TOP)
-move = Button(root, command=lambda: actions.append(Action('Move', icons[2])), image=icons[2], width=pic_size,
-             height=pic_size)
+move = Button(root, command=lambda: actions.append(Action('Move', icons[2])), image=icons[2], width=pic_size, height=pic_size)
 move.pack(side=TOP)
-turn = Button(root, command=lambda: actions.append(Action('Turn', icons[3])), image=icons[3], width=pic_size,
-              height=pic_size)
+turn = Button(root, command=lambda: actions.append(Action('Turn', icons[3])), image=icons[3], width=pic_size, height=pic_size)
 turn.pack(side=TOP)
-br = Button(root, command=lambda: actions.append(Action('Body Rotate', icons[4])), image=icons[4], width=pic_size,
-            height=pic_size)
+br = Button(root, command=lambda: actions.append(Action('Body Rotate', icons[4])), image=icons[4], width=pic_size, height=pic_size)
 br.pack(side=TOP)
-wait = Button(root, command=lambda: actions.append(Action('Wait', icons[5])), image=icons[5], width=pic_size,
-              height=pic_size)
+wait = Button(root, command=lambda: actions.append(Action('Wait', icons[5])), image=icons[5], width=pic_size, height=pic_size)
 wait.pack(side=TOP)
-del_all = Button(root, height=3, width=6, text='Clear', bg='black', fg='white', command=del_all)
-del_all.pack(side=TOP)
+del_all_button = Button(root, height=3, width=6, text='Clear', bg='black', fg='white', command=del_all)
+del_all_button.pack(side=TOP)
 
-rt = threading.Thread(target=receive)
-rt.start()
+# Socket thread init
+init_socket_thread = threading.Thread(target=init_socket)
+init_socket_thread.start()
 
 # Main tk loop and geometry
 root.geometry('800x450')

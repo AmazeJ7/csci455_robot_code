@@ -55,14 +55,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         handleSocketMessages();
 
-        network = new Network(tts);
-        Thread net = new Thread(network);
-        net.start();
-
         tts = new TTS(this);
         tts.start();
 
-
+        network = new Network(tts);
+        Thread net = new Thread(network);
+        net.start();
     }
 
     private void handleSocketMessages(){
@@ -70,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void handleMessage(Message msg) {
                 String msgData = msg.getData().getString("started");
                 Log.d(TAG, "received message from Network: " + msgData);
-                tts.handler.sendMessage(msg);
+                sendToTTS(msgData);
             }
         };
     }
@@ -78,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.connect:
+                sendToTTS("hello can you hear me");
                 break;
             case R.id.micBtn:
                 Log.d(TAG,"mic button pressed");
@@ -125,6 +124,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (resultCode == RESULT_OK && null != data) {
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     sendOnNetwork(result.get(0));
+                    tts = new TTS(this);
+                    tts.start();
                 }
                 break;
             }

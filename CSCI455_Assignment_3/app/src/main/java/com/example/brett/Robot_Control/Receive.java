@@ -26,11 +26,10 @@ public class Receive implements Runnable{
                 String rec = b.readLine();
                 System.out.println("Received " + rec);
 
-
                 if (rec != null) {
-                    Message msg = tts.handler.obtainMessage();
+                    Message msg = Message.obtain(tts.handler);
                     Bundle b = new Bundle();
-                    b.putString("TT", rec);
+                    b.putString("TT", "10:10:" + rec);
                     msg.setData(b);
                     tts.handler.sendMessage(msg);
                 }

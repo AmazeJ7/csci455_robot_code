@@ -20,7 +20,6 @@ public class TTS extends Thread implements TextToSpeech.OnInitListener {
     private static final String TAG = "TTS";
 
     private TextToSpeech tts;
-
     private Context context;
     public Handler handler;
     private String last;
@@ -31,14 +30,28 @@ public class TTS extends Thread implements TextToSpeech.OnInitListener {
         tts = new TextToSpeech(context, this);
     }
 
+    public void onInit(int i) {
+        if (i == TextToSpeech.SUCCESS) {
+            // set language to U.S. English
+            tts.setLanguage(Locale.US);
+        } else if (i == TextToSpeech.ERROR) {
+            Toast.makeText(context, "Text to Speech failed.", Toast.LENGTH_LONG).show();
+        }
+    }
 
     public void run() {
         Looper.prepare();
         handler = new Handler() {
             public void handleMessage(Message msg) {
-                String msgData = msg.getData().getString("TT");
-                Log.d(TAG, msgData);
-                speak(msgData);
+                String msg_data = msg.getData().getString("TT");
+                String[] msg_parts = msg_data.split(":");
+                float pitch = Float.parseFloat(msg_parts[0])/(float)10.0;
+                float speed = Float.parseFloat(msg_parts[1])/(float)10.0;
+                tts.setPitch(pitch);
+                tts.setSpeechRate(speed);
+                String msg_out = msg_parts[2];
+                Log.d(TAG, msg_data);
+                speak(msg_out);
             }
         };
 
@@ -63,16 +76,4 @@ public class TTS extends Thread implements TextToSpeech.OnInitListener {
             }
         }
     }
-
-    @Override
-    public void onInit(int i) {
-        if (i == TextToSpeech.SUCCESS) {
-            // set language to U.S. English
-            tts.setLanguage(Locale.US);
-        } else if (i == TextToSpeech.ERROR) {
-            Toast.makeText(context, "Text to Speech failed.", Toast.LENGTH_LONG).show();
-        }
-    }
-
-
 }
