@@ -16,20 +16,22 @@ public class Network implements Runnable{
     Send send;
     Receive r;
     Handler h;
+    MainActivity m;
 
-    public Network(TTS tts) {
+    public Network(TTS tts, MainActivity m) {
         this.tts = tts;
+        this.m = m;
     }
 
     @Override
     public void run(){
         try{
-            s = new Socket("192.168.42.137", 9999);
+            s = new Socket("192.168.1.214", 7777);
         }catch(Exception e){
             e.printStackTrace();
         }
 
-        r = new Receive(s, tts);
+        r = new Receive(s, tts, m);
         Thread rt = new Thread(r);
         rt.start();
 
