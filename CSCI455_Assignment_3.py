@@ -1,4 +1,4 @@
-from MockMaestro import Controller
+from Maestro import Controller
 from tkinter import *
 import time
 import os
@@ -87,12 +87,14 @@ def receive(s_2):
         elif msg_parts[0] == 'run' or msg_parts[0] == 'go':
             if len(msg_parts) > 1:
                 if msg_parts[1] == 'home':
+                    time.sleep(1)
                     for x in range(len(actions_inv)):
                         actions.append(actions_inv[len(actions_inv)-x-1])
-                    for x in range(len(actions_inv)):
-                        actions[x].time = int(actions[x].time/2)
+                    actions[0].time = int(actions[0].time/2)
                     run('andy')
                     del_all()
+                    s_2.close()
+                    s.close()
             else:
                 run('andy')
         elif msg_parts[0] == 'turn':
@@ -226,6 +228,10 @@ def run(who):
                 send_message = 'you are not nice\r\n'
             elif actions[x].pos == 4:
                 send_message = 'hello friend\r\n'
+            elif actions[x].pos == 4:
+                send_message = 'kill humans\r\n'
+            elif actions[x].pos == 4:
+                send_message = 'I do not like you\r\n'
             s_2.send(send_message.encode('ascii'))
             actions[x].animate()
         elif actions[x].name == 'STT':
@@ -346,7 +352,7 @@ class Action:
             position = Scale(self.settings_tk, from_=1, to=2, orient=HORIZONTAL)
         elif self.name == 'TTS':
             label1 = Label(self.settings_tk, text='Text to Say')
-            position = Scale(self.settings_tk, from_=1, to=4, orient=HORIZONTAL)
+            position = Scale(self.settings_tk, from_=1, to=6, orient=HORIZONTAL)
         if self.name != 'Wait' and self.name != 'STT':
             position.set(self.pos)
             position.pack()
@@ -408,7 +414,7 @@ canvas.bind('<ButtonPress-1>', m.mouse_pressed)
 canvas.bind('<ButtonRelease-1>', m.mouse_release)
 
 # Root's buttons
-go = Button(root, height=2, width=5, text='GO!', bg='black', fg='white', command=lambda: run('button'))
+go = Button(root, height=1, width=5, text='GO!', bg='black', fg='white', command=lambda: run('button'))
 go.pack(side=TOP)
 ht = Button(root, command=lambda: actions.append(Action('Head Tilt', icons[0], 1)), image=icons[0], width=pic_size, height=pic_size)
 ht.pack(side=TOP)

@@ -26,7 +26,7 @@ public class Network implements Runnable{
     @Override
     public void run(){
         try{
-            s = new Socket("10.152.171.167", 7777);
+            s = new Socket("10.200.17.114", 7777);
         }catch(Exception e){
             e.printStackTrace();
         }
