@@ -20,7 +20,7 @@ os.system('xset r off')
 xpos = 0
 ypos = 0
 actions = []
-actions_inv =[]
+actions_inv = []
 pic_size = 40
 port = 7777
 
@@ -61,14 +61,14 @@ def init_socket():
 # Function to receive STT commands
 def receive(s_2):
     while True:
-        global actions, actions_inv, stt_thread
+        global actions, actions_inv
         r = s_2.recv(1024)
         msg = r.decode('ascii')
         print('Received: ' + msg)
         msg_parts = msg.split()
         if msg_parts[0] == 'move':
-            actions.append(Action('Move', icons[2]))
-            actions_inv.append(Action('Move', icons[2]))
+            actions.append(Action('Move', icons[2], 1))
+            actions_inv.append(Action('Move', icons[2], 0))
             if msg_parts[1] == 'for':
                 actions[len(actions)-1].time = int(msg_parts[2])
                 actions_inv[len(actions)-1].time = int(msg_parts[2])
@@ -87,12 +87,16 @@ def receive(s_2):
         elif msg_parts[0] == 'run' or msg_parts[0] == 'go':
             if len(msg_parts) > 1:
                 if msg_parts[1] == 'home':
-                    actions = actions_inv
+                    for x in range(len(actions_inv)):
+                        actions.append(actions_inv[len(actions_inv)-x-1])
+                    for x in range(len(actions_inv)):
+                        actions[x].time = int(actions[x].time/2)
                     run('andy')
+                    del_all()
             else:
                 run('andy')
         elif msg_parts[0] == 'turn':
-            actions.append(Action('Turn', icons[3]))
+            actions.append(Action('Turn', icons[3], 1))
             if msg_parts[1] == 'left':
                 actions[len(actions)-1].pos = 1
                 actions_inv[len(actions)-1].pos = 2
@@ -103,9 +107,9 @@ def receive(s_2):
                 actions_inv[len(actions)-1].time = 6
         elif msg_parts[0] == 'rotate':
             if msg_parts[1] == 'body':
-                actions.append(Action('Body Rotate', icons[4]))
+                actions.append(Action('Body Rotate', icons[4], 1))
             elif msg_parts[1] == 'head':
-                actions.append(Action('Head Rotate', icons[1]))
+                actions.append(Action('Head Rotate', icons[1], 1))
             if msg_parts[2] == 'left':
                 actions[len(actions)-1].pos = 1
             elif msg_parts[2] == 'right':
@@ -114,28 +118,28 @@ def receive(s_2):
                 else:
                     actions[len(actions)-1].pos = 2
         elif msg_parts[0] == 'tilt':
-            actions.append(Action('Head Tilt', icons[0]))
+            actions.append(Action('Head Tilt', icons[0], 1))
             if msg_parts[2] == 'down':
                 actions[len(actions)-1].pos = 4
             if msg_parts[2] == 'up':
                 actions[len(actions)-1].pos = 1
         elif msg_parts[0] == 'wait':
-            actions.append(Action('Wait', icons[5]))
+            actions.append(Action('Wait', icons[5], 1))
             if len(msg_parts) > 2:
                 if msg_parts[1] == 'for':
                     actions[len(actions)-1].time = int(msg_parts[2])
         elif msg == 'clear' or msg == 'delete all':
             del_all()
-        if msg_parts[len(msg_parts)-1] == 'run' or msg_parts[len(msg_parts)-1] == 'go':
+        if msg_parts[0] != 'go' and msg_parts[0] != 'run' and (msg_parts[len(msg_parts)-1] == 'run' or msg_parts[len(msg_parts)-1] == 'go'):
             run('andy')
-        stt_thread.kill()
+        if msg_parts[0] != 'go' and msg_parts[0] != 'run':
+            run('andy')
 
 
 # Function to ask for speech
 def send_stt():
-    while True:
-        send_message = 'get speech\r\n'
-        s_2.send(send_message.encode('ascii'))
+    send_message = 'get speech\r\n'
+    s_2.send(send_message.encode('ascii'))
 
 
 # Function to run all actions
@@ -241,66 +245,81 @@ def run(who):
 
 # Function to delete all actions and reset canvas
 def del_all():
-    global xpos, ypos, actions, actions_inv
+    global xpos, ypos, actions
     canvas.delete('all')
     xpos = 0
     ypos = 0
     actions = []
-    actions_inv =[]
+
+
+# Function to add actions
+def add_to_actions(action):
+    if action == 'Move':
+        actions.append(Action('Move', icons[2], 1))
+        actions_inv.append(Action('Move', icons[2], 0))
+    elif action == 'Turn':
+        actions.append(Action('Turn', icons[3], 1))
+        actions_inv.append(Action('Turn', icons[3], 0))
 
 
 # Class to represent an action to be run
 class Action:
-    def __init__(self, name, icon):
-        global xpos, ypos, stt_thread
+    def __init__(self, name, icon, show):
+        global xpos, ypos, stt_thread, actions
         self.name = name
         self.icon = icon
-        if xpos < 700:
-            canvas.create_image(25 + xpos, 25 + ypos, image=self.icon)
-        else:
-            ypos += 55
-            xpos = 0
-            canvas.create_image(25 + xpos, 25 + ypos, image=self.icon)
+        if show:
+            if xpos < 700:
+                canvas.create_image(25 + xpos, 25 + ypos, image=self.icon)
+            else:
+                ypos += 55
+                xpos = 0
+                canvas.create_image(25 + xpos, 25 + ypos, image=self.icon)
+            xpos += 55
         self.time = 2
         self.pos = 0
         self.settings_tk = ''
         self.animate_tk = ''
         self.who = ''
-        xpos += 55
 
     # Animation function!
     def animate(self):
         canvas.delete('all')
         if self.name == 'STT':
-            stt_thread = threading.Thread(target=send_stt())
-            stt_thread.start()
-        else:
-            rect = []
+            self.time = 1000
+            send_stt()
+            del_all()
+        rect = []
+        if self.name != 'STT':
             canvas.create_text(100, 130, text=self.name + ' : ' + str(self.time) + ' seconds', fill='white')
-            if self.pos == 0:
-                canvas.create_text(100, 150, text='Waiting...', fill='white')
-            else:
-                canvas.create_text(100, 150, text='Position : ' + str(self.pos), fill='white')
+        else:
+            canvas.create_text(100, 130, text=self.name, fill='white')
+        if self.pos == 0:
+            canvas.create_text(100, 150, text='Waiting...', fill='white')
+        else:
+            canvas.create_text(100, 150, text='Position : ' + str(self.pos), fill='white')
+        for x in range(self.time):
+            rect.append(canvas.create_image(25 + 55 * x, 200, image=self.icon))
+        if self.who == 'andy':
             for x in range(self.time):
-                rect.append(canvas.create_image(25 + 55 * x, 200, image=self.icon))
-            if self.who == 'andy':
-                for x in range(self.time):
-                    time.sleep(1)
-                    canvas.update()
-                    canvas.delete(rect[self.time - x - 1])
-            elif self.who == 'button':
-                for x in range(self.time):
-                    canvas.update()
-                    canvas.delete(rect[self.time - x - 1])
-                    time.sleep(1)
-            canvas.delete('all')
+                time.sleep(1)
+                canvas.update()
+                canvas.delete(rect[self.time - x - 1])
+        elif self.who == 'button':
+            for x in range(self.time):
+                canvas.update()
+                canvas.delete(rect[self.time - x - 1])
+                time.sleep(1)
+        canvas.delete('all')
 
     # Function to edit settings or remove instance
     def open_settings(self):
         def save_val():
             self.time = time_scale.get()
-            if self.name != 'Wait':
+            if self.name != 'Wait' and self.name != 'STT':
                 self.pos = position.get()
+            if self.name == 'Move' or self.name == 'Turn':
+                actions_inv[len(actions)-1].pos = 3-self.pos
             self.settings_tk.destroy()
 
         self.settings_tk = Tk()
@@ -326,9 +345,9 @@ class Action:
             label1 = Label(self.settings_tk, text='Body Rotate Position (Left to Right)')
             position = Scale(self.settings_tk, from_=1, to=2, orient=HORIZONTAL)
         elif self.name == 'TTS':
-            label1 = Label(self.settings_tk, text='Body Rotate Position (Left to Right)')
+            label1 = Label(self.settings_tk, text='Text to Say')
             position = Scale(self.settings_tk, from_=1, to=4, orient=HORIZONTAL)
-        if self.name != 'Wait' or self.name != 'STT':
+        if self.name != 'Wait' and self.name != 'STT':
             position.set(self.pos)
             position.pack()
         label1.pack()
@@ -391,24 +410,26 @@ canvas.bind('<ButtonRelease-1>', m.mouse_release)
 # Root's buttons
 go = Button(root, height=2, width=5, text='GO!', bg='black', fg='white', command=lambda: run('button'))
 go.pack(side=TOP)
-ht = Button(root, command=lambda: actions.append(Action('Head Tilt', icons[0])), image=icons[0], width=pic_size, height=pic_size)
+ht = Button(root, command=lambda: actions.append(Action('Head Tilt', icons[0], 1)), image=icons[0], width=pic_size, height=pic_size)
 ht.pack(side=TOP)
-hr = Button(root, command=lambda: actions.append(Action('Head Rotate', icons[1])), image=icons[1], width=pic_size, height=pic_size)
+hr = Button(root, command=lambda: actions.append(Action('Head Rotate', icons[1], 1)), image=icons[1], width=pic_size, height=pic_size)
 hr.pack(side=TOP)
-move = Button(root, command=lambda: actions.append(Action('Move', icons[2])), image=icons[2], width=pic_size, height=pic_size)
+move = Button(root, command=lambda: add_to_actions('Move'), image=icons[2], width=pic_size, height=pic_size)
 move.pack(side=TOP)
-turn = Button(root, command=lambda: actions.append(Action('Turn', icons[3])), image=icons[3], width=pic_size, height=pic_size)
+turn = Button(root, command=lambda: add_to_actions('Turn'), image=icons[3], width=pic_size, height=pic_size)
 turn.pack(side=TOP)
-br = Button(root, command=lambda: actions.append(Action('Body Rotate', icons[4])), image=icons[4], width=pic_size, height=pic_size)
+br = Button(root, command=lambda: actions.append(Action('Body Rotate', icons[4], 1)), image=icons[4], width=pic_size, height=pic_size)
 br.pack(side=TOP)
-wait = Button(root, command=lambda: actions.append(Action('Wait', icons[5])), image=icons[5], width=pic_size, height=pic_size)
+wait = Button(root, command=lambda: actions.append(Action('Wait', icons[5], 1)), image=icons[5], width=pic_size, height=pic_size)
 wait.pack(side=TOP)
-stt_button = Button(root, command=lambda: actions.append(Action('STT', icons[6])), image=icons[6], width=pic_size, height=pic_size)
+stt_button = Button(root, command=lambda: actions.append(Action('STT', icons[6], 1)), image=icons[6], width=pic_size, height=pic_size)
 stt_button.pack(side=TOP)
-tts_button = Button(root, command=lambda: actions.append(Action('TTS', icons[7])), image=icons[7], width=pic_size, height=pic_size)
+tts_button = Button(root, command=lambda: actions.append(Action('TTS', icons[7], 1)), image=icons[7], width=pic_size, height=pic_size)
 tts_button.pack(side=TOP)
-del_all_button = Button(root, height=2, width=5, text='Clear', bg='black', fg='white', command=del_all)
+del_all_button = Button(root, height=1, width=5, text='Clear', bg='black', fg='white', command=del_all)
 del_all_button.pack(side=TOP)
+stt_button_2 = Button(root, height=1, width=5, text='STT', bg='black', fg='white', command=send_stt)
+stt_button_2.pack(side=TOP)
 
 # Socket thread init
 init_socket_thread = threading.Thread(target=init_socket)
