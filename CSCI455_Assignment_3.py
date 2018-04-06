@@ -1,4 +1,4 @@
-from Maestro import Controller
+from MockMaestro import Controller
 from tkinter import *
 import time
 import os
@@ -94,19 +94,17 @@ def receive(s_2):
                     run('andy')
                     del_all()
                     s_2.close()
-                    s.close()
             else:
                 run('andy')
         elif msg_parts[0] == 'turn':
             actions.append(Action('Turn', icons[3], 1))
+            actions_inv.append(Action('Turn', icons[3], 0))
             if msg_parts[1] == 'left':
                 actions[len(actions)-1].pos = 1
                 actions_inv[len(actions)-1].pos = 2
-                actions_inv[len(actions)-1].time = 6
             elif msg_parts[1] == 'right':
                 actions[len(actions)-1].pos = 2
                 actions_inv[len(actions)-1].pos = 1
-                actions_inv[len(actions)-1].time = 6
         elif msg_parts[0] == 'rotate':
             if msg_parts[1] == 'body':
                 actions.append(Action('Body Rotate', icons[4], 1))
@@ -122,9 +120,9 @@ def receive(s_2):
         elif msg_parts[0] == 'tilt':
             actions.append(Action('Head Tilt', icons[0], 1))
             if msg_parts[2] == 'down':
-                actions[len(actions)-1].pos = 4
-            if msg_parts[2] == 'up':
                 actions[len(actions)-1].pos = 1
+            if msg_parts[2] == 'up':
+                actions[len(actions)-1].pos = 4
         elif msg_parts[0] == 'wait':
             actions.append(Action('Wait', icons[5], 1))
             if len(msg_parts) > 2:
@@ -304,17 +302,20 @@ class Action:
             canvas.create_text(100, 150, text='Waiting...', fill='white')
         else:
             canvas.create_text(100, 150, text='Position : ' + str(self.pos), fill='white')
-        for x in range(self.time):
-            rect.append(canvas.create_image(25 + 55 * x, 200, image=self.icon))
+        if self.name != 'STT':
+            for x in range(self.time):
+                rect.append(canvas.create_image(25 + 55 * x, 200, image=self.icon))
         if self.who == 'andy':
             for x in range(self.time):
                 time.sleep(1)
                 canvas.update()
-                canvas.delete(rect[self.time - x - 1])
+                if self.name != 'STT':
+                    canvas.delete(rect[self.time - x - 1])
         elif self.who == 'button':
             for x in range(self.time):
                 canvas.update()
-                canvas.delete(rect[self.time - x - 1])
+                if self.name != 'STT':
+                    canvas.delete(rect[self.time - x - 1])
                 time.sleep(1)
         canvas.delete('all')
 

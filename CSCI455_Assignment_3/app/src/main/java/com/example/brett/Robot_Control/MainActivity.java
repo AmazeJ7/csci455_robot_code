@@ -3,7 +3,6 @@ package com.example.brett.Robot_Control;
 
 import android.content.ActivityNotFoundException;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
@@ -13,16 +12,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.content.Intent;
 import android.speech.RecognizerIntent;
-
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Locale;
 
 
@@ -56,10 +48,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tts = new TTS(this);
         tts.start();
 
-        n = new Network(tts, this);
-        Thread net = new Thread(n);
-        net.start();
-
         h = new Handler() {
             public void handleMessage(Message msg) {
                 startVoiceInput();
@@ -70,7 +58,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.connect:
-                n = new Network(tts, this);
+                EditText ip_text = findViewById(R.id.textBox);
+                String ip = ip_text.getText().toString();
+                n = new Network(ip, tts, this);
                 Thread net = new Thread(n);
                 net.start();
                 break;
@@ -80,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
-
 
     public void startVoiceInput() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
