@@ -17,8 +17,10 @@ public class Network implements Runnable{
     Receive r;
     Handler h;
     MainActivity m;
+    String ip;
 
-    public Network(TTS tts, MainActivity m) {
+    public Network(String ip, TTS tts, MainActivity m) {
+        this.ip = ip;
         this.tts = tts;
         this.m = m;
     }
@@ -26,7 +28,7 @@ public class Network implements Runnable{
     @Override
     public void run(){
         try{
-            s = new Socket("127.0.0.1", 7777);
+            s = new Socket(ip, 7777);
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -51,6 +53,5 @@ public class Network implements Runnable{
             }
         };
         Looper.loop();
-
     }
 }
