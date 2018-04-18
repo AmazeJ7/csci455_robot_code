@@ -1,4 +1,5 @@
-from FinalProject.PhoneAPI import PhoneAPI
+from FinalProject.ToPhone import ToPhone
+from FinalProject.MovementController import Mover
 
 class Player:
 
@@ -7,44 +8,50 @@ class Player:
         self.y = y
         self.health = startHealth
         self.gameManager = gameManager
+        self.mover = Mover()
+        self.orientation = "east"
 
 
     def startTurn(self):
-        PhoneAPI.firstMove();
+        ToPhone.firstMove();
 
 
     # called upon input from android
     def resolveDirection(self, direction):
         newX = self.x
         newY = self.y
+        newOrientation = ""
 
-        if(direction == "right"):
+        if(direction == "west"):
             newX += 1
-        elif (direction == "left"):
+            newOrientation = "west"
+        elif (direction == "east"):
             newX -= 1
-        elif (direction == "up"):
+            newOrientation = "east"
+        elif (direction == "north"):
             newY -= 1
-        elif (direction == "down"):
+            newOrientation = "north"
+
+        elif (direction == "south"):
             newY += 1
+            newOrientation = "south"
+
         else:
-            PhoneAPI.invalidDirection()
+            ToPhone.invalidDirection()
             return
         # if out of bounds
         print(newY, newX)
 
         if(newX > 4 or newX < 0 or newY > 4 or newY < 0 or self.gameManager.maze[newY][newX].passable == False):
-            # TODO: pass error message to phone
-            PhoneAPI.wrongDirection()
+            ToPhone.wrongDirection()
 
         else:
             self.x = newX
             self.y = newY
+            self.orientation = newOrientation
+            self.mover.move(self.orientation, newOrientation)
+            self.orientation = newOrientation
             # follow directions of node that we landed on
             self.gameManager.maze[newY][newX].landOn(self);
-
-
-
-
-
 
 

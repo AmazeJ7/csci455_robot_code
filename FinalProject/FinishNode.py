@@ -1,7 +1,7 @@
 from FinalProject.PassableNode import PassableNode
-from FinalProject.PhoneAPI import PhoneAPI
+from FinalProject.ToPhone import ToPhone
 
 class FinishNode(PassableNode):
 
     def landOn(self, player):
-        PhoneAPI.finish()
+        ToPhone.finish()

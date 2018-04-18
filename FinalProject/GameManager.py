@@ -2,7 +2,10 @@ from FinalProject.BlockedNode import BlockedNode
 from FinalProject.PlainNode import PlainNode
 from FinalProject.FinishNode import FinishNode
 from FinalProject.Player import Player
-from FinalProject.PhoneAPI import PhoneAPI
+from FinalProject.ToPhone import ToPhone
+from FinalProject import SocketConnection
+from FinalProject import MovementController
+
 
 
 class GameManager:
@@ -23,7 +26,7 @@ class GameManager:
 
         # create player at location 0,0 with health of 100
         self.player = Player(0,0,100, self)
-        PhoneAPI.player = self.player
+        ToPhone.player = self.player
 
 
     def runGame(self):
