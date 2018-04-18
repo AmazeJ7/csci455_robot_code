@@ -2,7 +2,6 @@ from FinalProject.FromPhone import FromPhone
 
 class ToPhone:
 
-    player = None # gets assigned in GameManager
     s_2 = None
 
     # TODO: change mock phone response into actual response on android end
@@ -13,7 +12,7 @@ class ToPhone:
         send_message = 'firstMove'
         ToPhone.s_2.send(send_message.encode('ascii'))
         # code to simulate phone's response:
-        direction = input("Hello, which way would you like me to go? ")
+        direction = input("Please select a direction to move: north, south, east or west: ")
         FromPhone.chooseNewDirection(direction)  # to pi
 
     @staticmethod

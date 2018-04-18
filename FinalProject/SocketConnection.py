@@ -36,7 +36,7 @@ def receive(s_2):
         msg = r.decode('ascii')
         print('Received: ' + msg)
         msg_parts = msg.split()
-        if msg_parts[0] == 'next':
+        if msg_parts[0] == 'go':
             # msg_parts[1] should be the direction chosen by the user
             FromPhone.chooseNewDirection(msg_parts[1]);
 

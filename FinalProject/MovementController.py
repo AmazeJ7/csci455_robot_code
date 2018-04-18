@@ -1,11 +1,6 @@
 from Maestro import Controller
-from tkinter import *
 import time
 import os
-import socket
-import threading
-
-
 
 class Mover:
 
