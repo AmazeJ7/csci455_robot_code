@@ -19,8 +19,8 @@ class Mover:
 
     def move(self, prevOrientation, newOrientation):
         if(prevOrientation == newOrientation):
-            self.controller.setTarget(1, 4000)
-            time.sleep(1)
+            self.controller.setTarget(1, 5000)
+            time.sleep(.5)
             self.controller.setTarget(1, 6000)
 
 

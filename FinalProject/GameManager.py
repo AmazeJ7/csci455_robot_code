@@ -1,9 +1,11 @@
+
+
+
 from FinalProject.BlockedNode import BlockedNode
 from FinalProject.PlainNode import PlainNode
 from FinalProject.FinishNode import FinishNode
 from FinalProject.Player import Player
 from FinalProject.FromPhone import FromPhone
-from FinalProject import SocketConnection
 from FinalProject import MovementController
 
 
@@ -19,6 +21,7 @@ class GameManager:
         self.player = Player(0,0,100, self)
         # set player on FromPhone class, so that it can call player methods upon receiving messages
         FromPhone.player = self.player
+
 
     # start player's first turn
     def runGame(self):
@@ -37,8 +40,7 @@ class GameManager:
 
 
 
-gm = GameManager()
-gm.runGame()
+
 
 
 

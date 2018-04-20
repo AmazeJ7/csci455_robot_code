@@ -23,17 +23,17 @@ class Player:
         newOrientation = ""
 
         # modify new player position based on direction given
-        if(direction == "west"):
+        if(direction == "West"):
             newX += 1
             newOrientation = "west"
-        elif (direction == "east"):
+        elif (direction == "East"):
             newX -= 1
             newOrientation = "east"
-        elif (direction == "north"):
+        elif (direction == "North"):
             newY -= 1
             newOrientation = "north"
 
-        elif (direction == "south"):
+        elif (direction == "South"):
             newY += 1
             newOrientation = "south"
         # tell phone if invalid direction is given
